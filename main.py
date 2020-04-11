@@ -1,4 +1,6 @@
+import random
 from uuid import UUID, uuid4
+
 from fastapi import FastAPI, WebSocket, Request
 from fastapi.responses import HTMLResponse
 from fastapi.staticfiles import StaticFiles
@@ -19,6 +21,10 @@ htmlela = """
 # connection issue cases, reload
 # stress test
 egg_pairs = {}
+
+
+def calculate_winner():
+    return bool(random.randint(0, 1))
 
 
 @app.get("/")
@@ -43,7 +49,7 @@ async def websocket_player1(websocket: WebSocket, game_id: UUID):
         if data == 'BYE':
             break
         websocket.username = data
-        player_url = websocket.url_for('get_ela', game_id=game_id) 
+        player_url = websocket.url_for('get_ela', game_id=game_id)
         await websocket.send_text(
             f'For player 2... <a href="{player_url}" target="_blank">Send to friend</a> send BYE to close socket...')
 
@@ -53,8 +59,11 @@ async def websocket_player2(websocket: WebSocket, game_id: UUID):
     await websocket.accept()
     websocket_player1 = egg_pairs[game_id]
     name = await websocket.receive_text()
-    result1 = {'broken': {'back': True, 'front': True}}
-    result2 = {'broken': {'back': False, 'front': False}}
+
+    back, front = calculate_winner(), calculate_winner()
+    result1 = {'back': back, 'front': front}
+    result2 = {'back': not back, 'front': not front}
+
     await websocket_player1.send_text(f"{name} joined and result is {result1}")
     await websocket.send_text(
         f"You joined {websocket_player1.username} and result for you is {result2}")
