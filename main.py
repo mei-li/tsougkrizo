@@ -11,10 +11,7 @@ app = FastAPI()
 app.mount("/static", StaticFiles(directory="static"), name="static")
 templates = Jinja2Templates(directory="templates")
 
-htmlela = """
-"""
 
-# real win or loose
 # add expiration
 # fix urls
 
@@ -67,4 +64,4 @@ async def websocket_player2(websocket: WebSocket, game_id: UUID):
     await websocket_player1.send_text(f"{name} joined and result is {result1}")
     await websocket.send_text(
         f"You joined {websocket_player1.username} and result for you is {result2}")
-    # TODO remove from dictionary the game
+    del egg_pairs[game_id]
