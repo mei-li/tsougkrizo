@@ -59,9 +59,11 @@ async def websocket_player2(websocket: WebSocket, game_id: UUID):
     await websocket.accept()
     websocket_player1 = egg_pairs[game_id]
     name = await websocket.receive_text()
-    result = calculate_winner()
-    result1 = {'result': result}
-    result2 = {'result': not result}
+
+    back, front = calculate_winner(), calculate_winner()
+    result1 = {'back': back, 'front': front}
+    result2 = {'back': not back, 'front': not front}
+
     await websocket_player1.send_text(f"{name} joined and result is {result1}")
     await websocket.send_text(
         f"You joined {websocket_player1.username} and result for you is {result2}")
