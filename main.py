@@ -1,3 +1,4 @@
+import json
 import random
 from uuid import UUID, uuid4
 
@@ -28,7 +29,7 @@ def calculate_winner():
 async def get(request: Request):
     game_id = str(uuid4())
     ws_url = request.url_for("websocket_player1", game_id=game_id)
-    return templates.TemplateResponse("player1.html.jinja2", {
+    return templates.TemplateResponse("base01.html.jinja2", {
         "request": request, "ws_url": ws_url})
 
 @app.get("/{game_id}/join")
@@ -42,14 +43,13 @@ async def websocket_player1(websocket: WebSocket, game_id: UUID):
     await websocket.accept()
     egg_pairs[game_id] = websocket
     while True:
-        data = await websocket.receive_text()
-        if data == 'BYE':
-            break
-        websocket.username = data
+        data = await websocket.receive_json()
+        if 'username' in data:
+            websocket.username = data['username']
+        else:
+            raise Exception('Invalid message in websocket')
         player_url = websocket.url_for('get_ela', game_id=game_id)
-        await websocket.send_text(
-            f'For player 2... <a href="{player_url}" target="_blank">Send to friend</a> send BYE to close socket...')
-
+        await websocket.send_json({'invitation_url': player_url})
 
 @app.websocket("/ws/{game_id}/ela")
 async def websocket_player2(websocket: WebSocket, game_id: UUID):
