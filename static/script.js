@@ -26,6 +26,7 @@ sendinvitationbutton.addEventListener('click', function(e) {
   }
     ws.onmessage = function(event) {
     var friend_url = event.data; /// here is the friend url
+    console.log("Server sends: " + friend_url)
   };
   e.preventDefault();
    $("#sendinvitation p").attr('data-title', "Αποστέλλεται...");
