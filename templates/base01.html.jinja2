@@ -3,9 +3,12 @@
   <head>
     <meta charset="utf-8">
     <title>title</title>
-    <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="animate.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', path='/style.css') }} ">
+    <link rel="stylesheet" href="{{ url_for('static', path='/animate.min.css') }} ">
   </head>
+	<script>
+	var ws_url = " {{ ws_url }} ";
+	</script>
   <body>
     <!-- page content -->
     <div id="host-1" class="container active">
@@ -23,7 +26,7 @@
     </div>
     <div id="host-2" class="container">
     	<div class="content">
-    		<img id="egg-guy" width="300px" src="loader.gif">
+    		<img id="egg-guy" width="300px" src="{{ url_for('static', path='/loader.gif') }} ">
     		<p class="maxwidth-50">Στείλε τη παρακάτω πρόσκληση σε ένα φίλο για να τσουγκρίσετε το αυγό σας παρεα!</p>
     		<div id="sendinvitation" class="c-fake-button">
 				<p data-title="Πρόσκληση"></p>
@@ -37,6 +40,7 @@
     	</div>
     </div>
   </body>
-  <script src="jquery-3.3.1.min.js"></script>
-  <script src="script.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js">
+</script>
+  <script src="{{ url_for('static', path='/script.js') }}"></script>
 </html>

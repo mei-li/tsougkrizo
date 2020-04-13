@@ -14,10 +14,10 @@ When you have this Python version, follow the steps below to run the application
 
 ```
 # create virtual environment - needed only the first time
-> python -m venv tsougkrizo
+> python -m venv venv
 
 # enable virtual environment - needed when not enabled
-> source tsougkrizo/bin/activate
+> source venv/bin/activate
 
 # install requirements - needed when new dependencies are in requirements.txt
 > pip install -r requirements.txt
