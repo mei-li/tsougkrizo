@@ -107,6 +107,7 @@ function init_page_game()
   $('#page-waiting-room').addClass('animated fadeOut faster');
   $('#page-game').addClass('animated fadeIn slow');
   $('#page-game').addClass('active');
+  HYPE.documents['eggs_animated01'].startTimelineNamed('Main Timeline', HYPE.documents['eggs_animated01'].kDirectionForward);
   setTimeout(function(){
     $('#page-waiting-room').removeClass('active');
       $('#page-waiting-room').removeClass('animated fadeOut faster');
