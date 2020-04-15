@@ -3,8 +3,7 @@ var global = {
   username: null,
   ws_url: ws_url,  // from base template
   is_host: is_host, // this is jinja letting js know <true> that this is a P1(host) session and <false> that this is a P2(guest) session
-  opponent_nickname: "SomeGuysname" //(MeiLi) ToDo: if you are P2 this is P1s name. If you are P1 this is P2's name. 
-  //if you are the guest/P2, would be nice to have P1s name ahead of the game so that the message says "Joining FOTIS's game" - not very important though
+  opponent_nickname: opponent_nickname,
 };
 var setnamebutton = document.getElementById("setname");
 var invitationbutton = document.getElementById("button-invitation");
@@ -32,8 +31,7 @@ invitationbutton.addEventListener('click', function(e) {
     } catch (ex) {
       console.error(ex);
     }
-    console.log("Server sends: " + friend_url);
-    console.log(friend_url);
+    console.log(friend_url['invitation_url']);
     //dummy test for whether there is a URL in the response. Will need changes if websocket ever returns anything else
     if ("invitation_url" in friend_url){
       connecting_waiting_room(friend_url);

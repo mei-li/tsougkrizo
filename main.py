@@ -38,7 +38,7 @@ async def get(request: Request):
 async def get_ela(request: Request, game_id: UUID):
     ws_url = request.url_for("websocket_player2", game_id=game_id)
     return templates.TemplateResponse("base01.html.jinja2", {
-        "request": request, "ws_url": ws_url, "is_host": "false" })
+        "request": request, "ws_url": ws_url, "is_host": "false" , "opponent_nickname": egg_pairs[game_id]['username']})
 
 @app.websocket("/ws/{game_id}")
 async def websocket_player1(websocket: WebSocket, game_id: UUID):
@@ -57,7 +57,7 @@ async def websocket_player1(websocket: WebSocket, game_id: UUID):
     data = await websocket.receive_json()
 
 # player 2 joins game is played by sb else
-# player 2 joins player 1 is disconnected 
+# player 2 joins player 1 is disconnected
 # player 2 joins player 1 is not there any more
 # TODO sync with Fotis about multiplayer support (only consider)
 # TODO sync with Fotis about expired, already played, error page
