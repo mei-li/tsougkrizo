@@ -1,5 +1,6 @@
 import os
 import json
+import contextlib
 import uvicorn
 from contextlib import suppress
 import random
@@ -11,6 +12,7 @@ from fastapi import FastAPI, WebSocket, Request
 from fastapi.responses import HTMLResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
+from starlette.websockets import WebSocketDisconnect
 
 app = FastAPI()
 sentry_sdk.init(os.environ.get('SENTRY_DSN'))
@@ -75,7 +77,9 @@ async def websocket_player1(websocket: WebSocket, game_id: UUID):
         player_url = websocket.url_for('get_ela', game_id=game_id)
         await websocket.send_json({'invitation_url': player_url})
     # TO keep socket alive until player2 joins
-    data = await websocket.receive_json()
+    with contextlib.supress(WebSocketDisconnect):
+        data = await websocket.receive_json()
+
 
 # TODO Test in heroku
 # TODO share
