@@ -177,12 +177,12 @@ function send_new_invite(e) {
 }
 
 function init_results_page() {
-  console.log("1");
+  $("#cards-container").scrollTop(0);
+
   $('#page-results .template').clone().insertAfter('#page-results .template');
   $('#page-results .template:last').removeAttr("style");
   $('#page-results .template:last').addClass("results-card");
   $('#page-results .template:last').removeClass("template");
-
 
   if ((global.last_eggroll.front) && (global.last_eggroll.back)){
     $(".results-card:first img.egg-cracked-tip").remove();
