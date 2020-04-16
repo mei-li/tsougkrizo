@@ -19,6 +19,9 @@ sentry_sdk.init(os.environ.get('SENTRY_DSN'))
 app.mount("/static", StaticFiles(directory="static"), name="static")
 templates = Jinja2Templates(directory="templates")
 
+class ErrorCode:
+    invalid_game = 'INVALID_GAME'
+
 ##### Exception handling
 @app.exception_handler(Exception)
 async def catch_all_exception_handler(request, exc):
@@ -48,13 +51,18 @@ async def get(request: Request):
 
 @app.get("/{game_id}/join")
 async def get_ela(request: Request, game_id: UUID):
+    game_id = str(game_id)
+    error = ErrorCode.invalid_game if game_id not in egg_pairs else ''
+    opponent_nickname = egg_pairs[game_id]['username'] if not error else ''
     ws_url = request.url_for("websocket_player2", game_id=game_id)
     return templates.TemplateResponse("base01.html.jinja2", {
-        "request": request, "ws_url": ws_url, "is_host": "false" , "opponent_nickname": egg_pairs[game_id]['username']})
+        "request": request, "ws_url": ws_url, "is_host": "false" ,
+        "opponent_nickname": opponent_nickname, 'error': error})
 
 @app.websocket("/ws/{game_id}")
 async def websocket_player1(websocket: WebSocket, game_id: UUID):
     await websocket.accept()
+    game_id = str(game_id)
     egg_pairs[game_id] = {
         'websocket': websocket,
         'username': None,
@@ -105,11 +113,30 @@ def read_username(data):
         raise Exception('Invalid message in websocket')
     return data['username']
 
+class GameError(Exception):
+    pass
+
+
+def get_game(game_id):
+    try:
+        game = egg_pairs[game_id]
+    except KeyError:
+        raise GameError('Game invalid')
+    if game['outcome']:
+        raise GameError('Already played')
+    return game
+
 @app.websocket("/ws/{game_id}/ela")
 async def websocket_player2(websocket: WebSocket, game_id: UUID):
+    game_id = str(game_id)
     await websocket.accept()
-    # TODO no game id or outcome already there
-    game = egg_pairs[game_id]
+    # TODO multiplayer
+    try:
+        game = get_game(game_id)
+    except GameError:
+        await websocket.send_json({'error': ErrorCode.invalid_game})
+        await websocket.close()
+        return
     print("In player 2: ", game, flush=True)
 
     data = await websocket.receive_json()
@@ -123,5 +150,4 @@ async def websocket_player2(websocket: WebSocket, game_id: UUID):
 
 
 if __name__ == "__main__":
-    print("HERE")
     uvicorn.run(app, host="0.0.0.0", port=8000)

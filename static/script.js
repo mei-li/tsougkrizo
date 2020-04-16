@@ -8,6 +8,7 @@ var global = {
     back: null,
     front: null
   },
+  error: error,
 };
 var setnamebutton = document.getElementById("setname");
 var invitationbutton = document.getElementById("button-invitation");
@@ -26,7 +27,12 @@ buttonnewinvitation.addEventListener('click', function (e) {
   send_new_invite(e);
 });
 
+if (global.error != ''){
+  handle_invalid_game();
+}
+
 function connect() {
+  // Websocket handling
   ws = new WebSocket(ws_url);
   var parsed_data;
   ws.onopen = function(){
@@ -34,7 +40,7 @@ function connect() {
   }
   ws.onmessage = function(event) {
     var data;
-    data = event.data; /// here is the friend url
+    data = event.data;
     try {
       parsed_data= JSON.parse(data);
     } catch (ex) {
@@ -49,18 +55,26 @@ function connect() {
       init_page_game(parsed_data.outcome);
       console.log("game init");
     }
+    else if ("error" in parsed_data){
+        handle_invalid_game()
+    }
     else {
       console.log("oh oh, websockets returned something else...");
     }
   };
 }
 
+function handle_invalid_game(){
+  alert("invalid game: Foti do something pretty");
+}
+
+
 invitationbutton.addEventListener('click', function(e) {
   connect();
   e.preventDefault();
 });
 
-function setnickname_and_progress(e) { // only for host
+function setnickname_and_progress(e) {
   e.preventDefault();
   console.log('Nickname and progress')
   global.username = $('#nickname')[0].value; 
