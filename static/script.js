@@ -26,34 +26,43 @@ buttonnewinvitation.addEventListener('click', function (e) {
   send_new_invite(e);
 });
 
-invitationbutton.addEventListener('click', function(e) {
+function connect() {
   ws = new WebSocket(ws_url);
-  var friend_url;
+  var parsed_data;
   ws.onopen = function(){
     ws.send(JSON.stringify({"username": global.username}));
   }
   ws.onmessage = function(event) {
-    var friend_url_json;
-    friend_url_json = event.data; /// here is the friend url
+    var data;
+    data = event.data; /// here is the friend url
     try {
-      friend_url= JSON.parse(friend_url_json);
+      parsed_data= JSON.parse(data);
     } catch (ex) {
       console.error(ex);
     }
-    console.log(friend_url['invitation_url']);
+    console.log(parsed_data['invitation_url']);
     //dummy test for whether there is a URL in the response. Will need changes if websocket ever returns anything else
-    if ("invitation_url" in friend_url){
-      connecting_waiting_room(friend_url);
-    }else
+    if ("invitation_url" in parsed_data){
+      connecting_waiting_room(parsed_data);
+    } else if ("outcome" in parsed_data)
     {
+      init_page_game(parsed_data.outcome);
+      console.log("game init");
+    }
+    else {
       console.log("oh oh, websockets returned something else...");
     }
   };
-  e.preventDefault();
-})
+}
 
-function setnickname_and_progress(e) {
+invitationbutton.addEventListener('click', function(e) {
+  connect();
   e.preventDefault();
+});
+
+function setnickname_and_progress(e) { // only for host
+  e.preventDefault();
+  console.log('Nickname and progress')
   global.username = $('#nickname')[0].value; 
   //initialize waiting room
   init_waiting_room();
@@ -75,6 +84,7 @@ function init_waiting_room()
     $("#page-waiting-room .instructions").html("<b>Στείλε</b> τη παρακάτω πρόσκληση σε ένα φίλο για να τσουγκρίσετε το αυγό σας παρεα!");
     $('#button-invitation p').html("Πρόσκληση");
   } else{
+    console.log('init waiting room Here is the friend ')
     $('#button-invitation').removeClass('active');
     connecting_waiting_room(null);//don't ask to send invite, skip straight to connecting!
   } 
@@ -86,6 +96,8 @@ function connecting_waiting_room(friend_url)
     $("#button-invitation p").html("Επαναποστολή");
     $("#page-waiting-room .instructions").html("Αναμονή για σύνδεση φίλου! Μην κλείσεις αυτό το παράθυρο <br> Πάτα το πλήκτρο για να ξαναστείλεις την πρόσκληση ή στείλε του τον παρακάτω σύνδεσμο <br> <b>"+friend_url["invitation_url"]+"</b>");
   }else{
+    console.log('Connect waiting room Here is the friend ')
+    connect();
     $("#button-invitation p").html("Πρόσκληση");
     $("#page-waiting-room .instructions").html("Γίνεται σύνδεση στο παιχνίδι του <b>"+ global.opponent_nickname + "</b>");
   }
@@ -94,21 +106,6 @@ function connecting_waiting_room(friend_url)
   setTimeout(function(){	
       $('#loading-icon').removeClass('animated fadeIn faster');
   }, 500);
-  //MeiLi ToDo: Do your websocket magic!
-  //for test purposes i wait 500ms and then assume somebody has joined your game
-  //i also perform a random roll :) at the end of the roll I have the following
-  //opponent_nickname (if you couldn't easily get it early on from jinja, this is the moment!)
-  //back:true/false
-  //front: true/false
-  var eggroll = {
-    back: (Math.random() >= 0.5),
-    front: (Math.random() >= 0.5)
-  };
-  global.last_eggroll=eggroll; //lame, but I'm passing this var to the global scope so I can reuse it in the results page :S
-  console.log(global.last_eggroll);
-  setTimeout(function(){	
-    init_page_game(eggroll);
-  }, 1000);
 }
 
 function timeline_finished(hypeDocument, element, event) {
@@ -126,6 +123,7 @@ function timeline_finished(hypeDocument, element, event) {
 
 function init_page_game(eggroll)
 {
+  global.last_eggroll=eggroll;
   $('#page-waiting-room').addClass('animated fadeOut faster');
   $('#page-game').addClass('animated fadeIn slow');
   $('#page-game').addClass('active');
