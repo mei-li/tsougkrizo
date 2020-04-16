@@ -19,7 +19,16 @@ button:focus {
 body {
 	font-size: 1em;
     font-family: Roboto, Helvetica-Neue, Arial, sans-serif;
-    background-color: var(--background-color-1);
+	background-color: var(--background-color-1);
+	background: url('background.png') no-repeat center center fixed;
+	-webkit-background-size: 100%;
+	-moz-background-size: 100%;
+	-o-background-size: 100%;
+	background-size: 100%;
+	-webkit-background-size: cover;
+	-moz-background-size: cover;
+	-o-background-size: cover;
+	background-size: cover;
 }
 
 #guest{
@@ -41,6 +50,7 @@ body {
 	width:100%;	
 	opacity:0;
 	visibility:hidden;
+	background-image: url("noise_light.png");
 }
 
 .content{
@@ -48,7 +58,7 @@ body {
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	background-color: var(--background-color-2);
+	/*background-color: var(--background-color-2);*/
 	flex-direction: column;
 	display: inline-flex;
     /*grid-template-columns: 1fr;
@@ -59,7 +69,7 @@ body {
 }
 
 #page-waiting-room .content{
-	background-color: var(--background-color-3);
+	
 }
 
 #cards-container {
@@ -110,6 +120,13 @@ body {
 #button-invitation {
 	visibility:hidden;
 	opacity:0;
+}
+
+p.instructions, .c-fake-button p {
+	font-size: 2.3em;
+	padding: 0vw;
+	line-height: 1.3em;
+	max-width: 20em;
 }
 
 #instructions::before {
