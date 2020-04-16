@@ -1,21 +1,10 @@
-<!DOCTYPE html>
-<html lang="el">
-  <head>
-    <meta charset="utf-8">
-    <title>title</title>
-    <link rel="stylesheet" href="{{ url_for('static', path='/style.css') }} ">
-    <link rel="stylesheet" href="{{ url_for('static', path='/animate.min.css') }} ">
-  </head>
-	<script>
-	var ws_url = " {{ ws_url }} ";
-	var is_host = {{ is_host }} ;
-	var opponent_nickname = "{{ opponent_nickname }}";
-	</script>
-  <body>
-    <!-- page content -->
+{% extends "base.html.jinja2" %}
+
+{% block content %}
+<!-- page content -->
     <div id="page-nickname" class="container active">
     	<div class="content">
-    		<p class="instructions">Καλωσήρθες! Πως να σε συστήσω;</p>
+    		<p class="instructions">Καλωσήρθες! </br> Πως να σε συστήσω;</p>
     		<div class="c-formContainer">
 				<form class="c-form" autocomplete="off" action="">
 			    	<input id="nickname" class="c-form__input" placeholder="Όνομα" type="text" pattern="[A-Za-zΑ-Ωα-ω0-9άέίϊΐόήώύϋΰΆΈΊΪΌΉΏΎΫς\s]{1,30}$" required>
@@ -29,7 +18,8 @@
     <div id="page-waiting-room" class="container">
     	<div class="content">
     		<p class="instructions"></p>
-    		<img id="loading-icon" width="128px" src="{{ url_for('static', path='/loader.gif') }} ">
+			<img id="loading-icon" width="64px" src="{{ url_for('static', path='/loader.gif') }} ">
+			<p class="notes"></p>
 			<div id="button-invitation" class="c-fake-button">
 				<p></p>
 			</div>
@@ -37,8 +27,6 @@
     </div>
     <div id="page-game" class="container">
     	<div class="content">
-    		<p class="title"></p>
-			<p class="">FIGHT!</p>
 			<div id="mycanvas">
 				<div id="eggsanimated01_hype_container" class="HYPE_document" style="margin:auto;position:relative;width:100%;height:100%;overflow:hidden;">
 					<script type="text/javascript" charset="utf-8" src=" {{ url_for('static', path='/eggs_animated01.hyperesources/eggsanimated01_hype_generated_script.js?47843') }} "></script>
@@ -49,9 +37,11 @@
     </div>
 	<div id="page-results" class="container">
     	<div class="content">
-    		<p class="instructions">test title</p>
+    		<p class="instructions">Χριστός Ανέστη!</p>
     		<div id="cards-container">
 				<div style="display:none;" class="template">
+					<p class="versus-title"></p>
+					<p class="tag-line"></p>
 					<img class="egg-result egg-champion" width="320px" src="{{ url_for('static', path='/egg_champion_s.png') }} ">
 					<img class="egg-result egg-cracked-tip" width="320px" src="{{ url_for('static', path='/egg_cracked_tip_s.png') }} ">
 					<img class="egg-result egg-cracked-butt" width="320px" src="{{ url_for('static', path='/egg_cracked_butt_s.png') }} ">
@@ -59,13 +49,9 @@
 				</div>
 			</div>
 			<div id="button-new-invitation" class="c-fake-button">
-				<p>Σπάσε αυγό με άλλο φίλο</p>
+				<p>Νεα Αναμέτρηση</p>
 			</div>
 			
     	</div>
     </div>
-  </body>
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js">
-</script>
-  <script src="{{ url_for('static', path='/script.js') }}"></script>
-</html>
+{% endblock %}

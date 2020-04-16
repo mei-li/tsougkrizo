@@ -4,9 +4,26 @@
 	--background-color-3: #f9d48e;
 }
 
+
+
 html, body {
 	padding:0;
 	margin:0;
+	/*transform: perspective(1px) scale(1.0);*/
+}
+
+
+
+* {
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+  }
+  
+  
+
+::-webkit-scrollbar {
+    width: 0px;  /* Remove scrollbar space */
+    background: transparent;  /* Optional: just make scrollbar invisible */
 }
 
 input:focus,
@@ -29,6 +46,63 @@ body {
 	-moz-background-size: cover;
 	-o-background-size: cover;
 	background-size: cover;
+}
+
+.light-text {
+	opacity:0.7;
+}
+
+.notes {
+    text-align: center;
+}
+
+
+.tag-line{
+	font-family: "BPKinder";
+	font-size:1.3em;
+	font-weight: 300;
+	font-variant: small-caps;
+	line-height: 1.3;
+	margin-top: 0.3em;
+}
+
+.fielded-text {
+  text-shadow:   0px -6px 0 #212121,  
+                 0px -6px 0 #212121,
+                 0px  6px 0 #212121,
+                 0px  6px 0 #212121,
+                -6px  0px 0 #212121,  
+                 6px  0px 0 #212121,
+                -6px  0px 0 #212121,
+                 6px  0px 0 #212121,
+                -6px -6px 0 #212121,  
+                 6px -6px 0 #212121,
+                -6px  6px 0 #212121,
+                 6px  6px 0 #212121,
+                -6px  18px 0 #212121,
+                 0px  18px 0 #212121,
+                 6px  18px 0 #212121,
+                 0 19px 1px rgba(0,0,0,.1),
+                 0 0 6px rgba(0,0,0,.1),
+                 0 6px 3px rgba(0,0,0,.3),
+                 0 12px 6px rgba(0,0,0,.2),
+                 0 18px 18px rgba(0,0,0,.25),
+                 0 24px 24px rgba(0,0,0,.2),
+                 0 36px 36px rgba(0,0,0,.15);
+}
+
+.versus-title {
+	font-family: "Kayak";
+	font-size:2em;
+	font-weight: 900;
+	font-variant: small-caps;
+	line-height: 1.3;
+	margin-bottom: 0;
+	
+}
+
+.results-card{
+	text-align:center;
 }
 
 #guest{
@@ -123,10 +197,11 @@ body {
 }
 
 p.instructions, .c-fake-button p {
-	font-size: 2.3em;
+	font-size: 1.5em;
 	padding: 0vw;
 	line-height: 1.3em;
 	max-width: 20em;
+	font-family: "BPKinder";
 }
 
 #instructions::before {
