@@ -9,6 +9,7 @@ var global = {
     front: null
   },
   error: error,
+  timeout: 1000,  // milliseconds to retry failed socket connection for host
 };
 var setnamebutton = document.getElementById("setname");
 var invitationbutton = document.getElementById("button-invitation");
@@ -49,7 +50,8 @@ function connect() {
       console.log('Socket is closed. Reconnect will be attempted in 1 second.', e.reason);
       setTimeout(function() {
         connect();
-      }, 1000);
+      }, global.timeout);
+      global.timeout = global.timeout*2;
     }
   };
 
