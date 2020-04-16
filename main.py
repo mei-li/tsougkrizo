@@ -77,7 +77,7 @@ async def websocket_player1(websocket: WebSocket, game_id: UUID):
         player_url = websocket.url_for('get_ela', game_id=game_id)
         await websocket.send_json({'invitation_url': player_url})
     # TO keep socket alive until player2 joins
-    with contextlib.supress(WebSocketDisconnect):
+    with contextlib.suppress(WebSocketDisconnect):
         data = await websocket.receive_json()
 
 
