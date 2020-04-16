@@ -45,10 +45,12 @@ function connect() {
     ws.send(JSON.stringify({"username": global.username}));
   }
   ws.onclose = function(e) {
-    console.log('Socket is closed. Reconnect will be attempted in 1 second.', e.reason);
-    setTimeout(function() {
-      connect();
-    }, 1000);
+    if (global.is_host){
+      console.log('Socket is closed. Reconnect will be attempted in 1 second.', e.reason);
+      setTimeout(function() {
+        connect();
+      }, 1000);
+    }
   };
 
   ws.onerror = function(err) {
