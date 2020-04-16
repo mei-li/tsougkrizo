@@ -1,7 +1,7 @@
 :root {
-	--background-color-1: rgb(150,81,81);
-	--background-color-2: #ff7b73;
-	--background-color-3: #5CC297;
+	--background-color-1: #f9d48e;
+	--background-color-2: #f9d48e;
+	--background-color-3: #f9d48e;
 }
 
 html, body {
@@ -19,7 +19,16 @@ button:focus {
 body {
 	font-size: 1em;
     font-family: Roboto, Helvetica-Neue, Arial, sans-serif;
-    background-color: var(--background-color-1);
+	background-color: var(--background-color-1);
+	background: url('background.png') no-repeat center center fixed;
+	-webkit-background-size: 100%;
+	-moz-background-size: 100%;
+	-o-background-size: 100%;
+	background-size: 100%;
+	-webkit-background-size: cover;
+	-moz-background-size: cover;
+	-o-background-size: cover;
+	background-size: cover;
 }
 
 #guest{
@@ -40,7 +49,8 @@ body {
 	height:100%;
 	width:100%;	
 	opacity:0;
-	visibility: hidden;
+	visibility:hidden;
+	background-image: url("noise_light.png");
 }
 
 .content{
@@ -48,20 +58,89 @@ body {
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	background-color: var(--background-color-2);
+	/*background-color: var(--background-color-2);*/
 	flex-direction: column;
+	display: inline-flex;
+    /*grid-template-columns: 1fr;
+    grid-template-rows: 1fr auto 1fr;
+    grid-template-areas: "nav1" "car1" "butt1";*/
+    min-height: 0;
+    min-width: 0;
 }
 
-#host-2 .content{
-	background-color: var(--background-color-3);
+#page-waiting-room .content{
+	
 }
 
-#egg-guy {
+#cards-container {
+	overflow: scroll;
+	grid-area: car1;
 }
 
-.active {
+#button-new-invitation {
+	grid-area:butt1;
+}
+
+#mycanvas {
+	position: absolute;
+	width: 100%;
+	height: 100%;
+	overflow: hidden;
+}
+
+.egg {
+    width: 100%;
+    height: 75%;
+    position: absolute;
+}
+
+#myegg {
+	top: 65%;
+}
+
+#enemyegg {
+	top: -35%;
+}
+
+.egg img {
+    height: 100%;
+    margin: auto;
+	display: block;
+}
+
+#myegg {
+	transform: rotateZ(180deg);
+}
+
+#loading-icon {
+	opacity:0;
+	display:none;
+}
+
+#button-invitation {
+	visibility:hidden;
+	opacity:0;
+}
+
+p.instructions, .c-fake-button p {
+	font-size: 2.3em;
+	padding: 0vw;
+	line-height: 1.3em;
+	max-width: 20em;
+}
+
+#instructions::before {
+	content: attr(data-title);
+}
+
+.container.active, #button-invitation.active {
 	opacity:100;
 	visibility: unset;
+}
+
+#loading-icon.active  {
+	opacity:100;
+	display: unset;
 }
 
 .inactive {
@@ -79,25 +158,28 @@ body {
 /* codepen https://codepen.io/bertdida/pen/xyPKRX
 */
 .c-formContainer .c-form {
-  width: 37.5em;
+  max-width: 37.5em;
 }
 
 .c-formContainer,
 .c-form {
-  width: 20em;
+  width: 100%;
   height: 6.25em;
 }
 
 .c-formContainer {
   position: relative;
   font-weight: 700;
+  width:100%;
 }
 
 .c-fake-button {
-	padding: 0.625em;
+	/*padding: 0.625em;*/
+	padding: 1.5em;
 	box-sizing: border-box;
 	box-shadow: 0 0.125em 0.3125em rgba(0, 0, 0, 0.3);
-	width: 20em;
+	width: 100%;
+	max-width: 30em;
 	height: 6.25em;
 	border-radius: 6.25em;
 	transition: 0.2s;
@@ -162,7 +244,7 @@ body {
 .c-form__input,
 .c-form__buttonLabel {
   font-size: 1.75em;
-  transform: scale(0.7);
+  transform: scale(0.9);
   transition: 0s;
 }
 
@@ -171,6 +253,8 @@ body {
   height: 100%;
   width: 100%;
   padding: 0 0.714em;
+  flex: 3 3 auto;
+  min-width: 5em;
 }
 .c-form__input::placeholder {
   color: currentColor;
@@ -205,7 +289,7 @@ body {
   color: inherit;
   padding: 0;
   height: 100%;
-  width: 5em;
+  min-width: 3em;
   background-color: #ff7b73;
 }
 
