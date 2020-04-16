@@ -14,6 +14,7 @@ var setnamebutton = document.getElementById("setname");
 var invitationbutton = document.getElementById("button-invitation");
 var nicknamefield = document.getElementById('nickname');
 var buttonnewinvitation = document.getElementById("button-new-invitation");
+var buttonreset = document.getElementById("button-reset");
 
 nicknamefield.addEventListener('keydown', function (e) {if (e.key === "Enter" && nicknamefield.checkValidity()) {
   console.log(nicknamefield.checkValidity());
@@ -25,6 +26,11 @@ setnamebutton.addEventListener('click', function (e) {
 buttonnewinvitation.addEventListener('click', function (e) {
   //go back to the waiting room (if you were a guest, now you are host)
   send_new_invite(e);
+});
+
+buttonreset.addEventListener('click', function (e) {
+  //reset the app button
+  window.location = "/";
 });
 
 if (global.error != ''){
@@ -65,7 +71,8 @@ function connect() {
 }
 
 function handle_invalid_game(){
-  alert("invalid game: Foti do something pretty");
+  console.log("ERORRRRROORORR");
+  init_error_page();
 }
 
 
@@ -224,5 +231,17 @@ function init_results_page() {
       $('#page-results').removeClass('animated fadeIn slow');
   }, 800);
   $(".results-card-1 img.egg-result").html("Πρόσκληση");
+}
 
+function init_error_page(){
+  var $previous_page = $('.container.active');
+  $previous_page.addClass('animated fadeOut faster');
+  $('#page-error').addClass('animated fadeIn slow');
+  $('#page-error').addClass('active');
+  $("#page-error .instructions").html("Αυτός ο σύνδεσμος δεν είναι έγκυρος πλέον");
+  setTimeout(function(){
+    $previous_page.removeClass('active');
+      $previous_page.removeClass('animated fadeOut faster');
+      $('#page-error').removeClass('animated fadeIn slow');
+  }, 800);
 }
