@@ -1,7 +1,7 @@
 :root {
-	--background-color-1: rgb(150,81,81);
-	--background-color-2: #ff7b73;
-	--background-color-3: #5CC297;
+	--background-color-1: #f9d48e;
+	--background-color-2: #f9d48e;
+	--background-color-3: #f9d48e;
 }
 
 html, body {
@@ -50,10 +50,25 @@ body {
 	justify-content: center;
 	background-color: var(--background-color-2);
 	flex-direction: column;
+	display: grid;
+    grid-template-columns: 1fr;
+    grid-template-rows: 1fr auto 1fr;
+    grid-template-areas: "nav1" "car1" "butt1";
+    min-height: 0;
+    min-width: 0;
 }
 
 #page-waiting-room .content{
 	background-color: var(--background-color-3);
+}
+
+#cards-container {
+	overflow: scroll;
+	grid-area: car1;
+}
+
+#button-new-invitation {
+	grid-area:butt1;
 }
 
 #mycanvas {
@@ -87,7 +102,7 @@ body {
 	transform: rotateZ(180deg);
 }
 
-#egg-guy {
+#loading-icon {
 	opacity:0;
 	display:none;
 }
@@ -106,7 +121,7 @@ body {
 	visibility: unset;
 }
 
-#egg-guy.active  {
+#loading-icon.active  {
 	opacity:100;
 	display: unset;
 }

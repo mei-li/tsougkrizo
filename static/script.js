@@ -4,10 +4,15 @@ var global = {
   ws_url: ws_url,  // from base template
   is_host: is_host, // this is jinja letting js know <true> that this is a P1(host) session and <false> that this is a P2(guest) session
   opponent_nickname: opponent_nickname,
+  last_eggroll: {
+    back: null,
+    front: null
+  },
 };
 var setnamebutton = document.getElementById("setname");
 var invitationbutton = document.getElementById("button-invitation");
 var nicknamefield = document.getElementById('nickname');
+var buttonnewinvitation = document.getElementById("button-new-invitation");
 
 nicknamefield.addEventListener('keydown', function (e) {if (e.key === "Enter" && nicknamefield.checkValidity()) {
   console.log(nicknamefield.checkValidity());
@@ -15,6 +20,10 @@ nicknamefield.addEventListener('keydown', function (e) {if (e.key === "Enter" &&
 });
 setnamebutton.addEventListener('click', function (e) {
   setnickname_and_progress(e)
+});
+buttonnewinvitation.addEventListener('click', function (e) {
+  //go back to the waiting room (if you were a guest, now you are host)
+  send_new_invite(e);
 });
 
 invitationbutton.addEventListener('click', function(e) {
@@ -77,15 +86,16 @@ function connecting_waiting_room(friend_url)
     $("#button-invitation p").html("Επαναποστολή");
     $("#page-waiting-room .instructions").html("Αναμονή για σύνδεση φίλου! Μην κλείσεις αυτό το παράθυρο <br> Πάτα το πλήκτρο για να ξαναστείλεις την πρόσκληση ή στείλε του τον παρακάτω σύνδεσμο <br> <b>"+friend_url["invitation_url"]+"</b>");
   }else{
+    $("#button-invitation p").html("Πρόσκληση");
     $("#page-waiting-room .instructions").html("Γίνεται σύνδεση στο παιχνίδι του <b>"+ global.opponent_nickname + "</b>");
   }
-  $('#egg-guy').addClass('animated fadeIn faster');
-  $('#egg-guy').addClass('active');
+  $('#loading-icon').addClass('animated fadeIn faster');
+  $('#loading-icon').addClass('active');
   setTimeout(function(){	
-      $('#egg-guy').removeClass('animated fadeIn faster');
+      $('#loading-icon').removeClass('animated fadeIn faster');
   }, 500);
   //MeiLi ToDo: Do your websocket magic!
-  //for test purposes i wait 1000ms and then assume somebody has joined your game
+  //for test purposes i wait 500ms and then assume somebody has joined your game
   //i also perform a random roll :) at the end of the roll I have the following
   //opponent_nickname (if you couldn't easily get it early on from jinja, this is the moment!)
   //back:true/false
@@ -94,18 +104,43 @@ function connecting_waiting_room(friend_url)
     back: (Math.random() >= 0.5),
     front: (Math.random() >= 0.5)
   };
-  console.log(eggroll);
+  global.last_eggroll=eggroll; //lame, but I'm passing this var to the global scope so I can reuse it in the results page :S
+  console.log(global.last_eggroll);
   setTimeout(function(){	
     init_page_game(eggroll);
   }, 1000);
 }
 
-function init_page_game()
+function timeline_finished(hypeDocument, element, event) {
+  // display the name of the Hype container and the event called
+  console.log(event);
+  if (event.type === "HypeTimelineComplete"){
+    if (event.timelineName === "Bump Timeline Butt"){
+      console.log("finished animation sequence");
+      init_results_page();
+      return false;
+    }
+  }
+  
+}
+
+function init_page_game(eggroll)
 {
   $('#page-waiting-room').addClass('animated fadeOut faster');
   $('#page-game').addClass('animated fadeIn slow');
   $('#page-game').addClass('active');
-  HYPE.documents['eggs_animated01'].startTimelineNamed('Main Timeline', HYPE.documents['eggs_animated01'].kDirectionForward);
+  if("HYPE_eventListeners" in window === false) {
+    window.HYPE_eventListeners = Array();
+  }
+  window.HYPE_eventListeners.push({"type":"HypeTimelineComplete", "callback": timeline_finished});
+  HYPE.documents['eggs_animated01'].customData['front']=eggroll["front"];
+  HYPE.documents['eggs_animated01'].customData['back']=eggroll["back"];
+  HYPE.documents['eggs_animated01'].customData['opponent_name']=global.opponent_nickname;
+  HYPE.documents['eggs_animated01'].customData['my_name']=global.username;
+  if (global.username === global.opponent_nickname) {
+    HYPE.documents['eggs_animated01'].customData['my_name']="Εγώ";
+  }
+  HYPE.documents['eggs_animated01'].continueTimelineNamed('Main Timeline', HYPE.documents['eggs_animated01'].kDirectionForward);
   setTimeout(function(){
     $('#page-waiting-room').removeClass('active');
       $('#page-waiting-room').removeClass('animated fadeOut faster');
@@ -113,4 +148,69 @@ function init_page_game()
   }, 800);
   $('#myegg').addClass('animated slideInUp slow');
   $('#enemyegg').addClass('animated slideInUp slow delay-1s');
+}
+
+function send_new_invite(e) {
+  e.preventDefault();
+  global.is_host = true;
+  global.opponent_nickname = null;
+
+  //ToDo meili: do your websocket magic for the new host
+  //if you were already a host, do you need to make a new room or keep the same?
+  // 
+
+  //when done, goto send invitation/initialize waiting room
+  HYPE.documents['eggs_animated01'].startTimelineNamed('Main Timeline', HYPE.documents['eggs_animated01'].kDirectionForward);
+  HYPE.documents['eggs_animated01'].goToTimeInTimelineNamed(0,'Bump Timeline Butt');
+  HYPE.documents['eggs_animated01'].goToTimeInTimelineNamed(0,'Bump Timeline');
+  $('#loading-icon').removeClass('active');
+  $('#button-invitation').addClass('active');
+  init_waiting_room();
+  $('#page-results').addClass('animated fadeOut faster');
+  $('#page-waiting-room').addClass('animated fadeIn slow');
+  $('#page-waiting-room').addClass('active');
+  setTimeout(function(){
+    $('#page-results').removeClass('active');
+      $('#page-results').removeClass('animated fadeOut faster');
+      $('#page-waiting-room').removeClass('animated fadeIn slow');
+  }, 800);
+}
+
+function init_results_page() {
+  console.log("1");
+  $('#page-results .template').clone().insertAfter('#page-results .template');
+  $('#page-results .template:last').removeAttr("style");
+  $('#page-results .template:last').addClass("results-card");
+  $('#page-results .template:last').removeClass("template");
+
+
+  if ((global.last_eggroll.front) && (global.last_eggroll.back)){
+    $(".results-card:first img.egg-cracked-tip").remove();
+    $(".results-card:first img.egg-cracked-butt").remove();
+    $(".results-card:first img.egg-cracked-both").remove();
+  } else if (global.last_eggroll.front) {
+    $(".results-card:first img.egg-champion").remove();
+    $(".results-card:first img.egg-cracked-butt").remove();
+    $(".results-card:first img.egg-cracked-both").remove();
+  } else if (global.last_eggroll.back){
+    $(".results-card:first img.egg-champion").remove();
+    $(".results-card:first img.egg-cracked-tip").remove();
+    $(".results-card:first img.egg-cracked-both").remove();
+  } else {
+    $(".results-card:first img.egg-champion").remove();
+    $(".results-card:first img.egg-cracked-tip").remove();
+    $(".results-card:first img.egg-cracked-butt").remove();
+  }
+
+  //ToDo (for multiplayer): dynamically add .results-card-N with results for current match, at the top
+  $('#page-game').addClass('animated fadeOut faster');
+  $('#page-results').addClass('animated fadeIn slow');
+  $('#page-results').addClass('active');
+  setTimeout(function(){
+    $('#page-game').removeClass('active');
+      $('#page-game').removeClass('animated fadeOut faster');
+      $('#page-results').removeClass('animated fadeIn slow');
+  }, 800);
+  $(".results-card-1 img.egg-result").html("Πρόσκληση");
+
 }
