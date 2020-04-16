@@ -48,7 +48,7 @@ def calculate_winner():
 async def get(request: Request):
     game_id = str(uuid4())
     ws_url = request.url_for("websocket_player1", game_id=game_id)
-    return templates.TemplateResponse("base01.html.jinja2", {
+    return templates.TemplateResponse("player.html.jinja2", {
         "request": request, "ws_url": ws_url, "is_host": "true" })
 
 @app.get("/{game_id}/join")
@@ -57,7 +57,7 @@ async def get_ela(request: Request, game_id: UUID):
     error = ErrorCode.invalid_game if game_id not in egg_pairs else ''
     opponent_nickname = egg_pairs[game_id]['username'] if not error else ''
     ws_url = request.url_for("websocket_player2", game_id=game_id)
-    return templates.TemplateResponse("base01.html.jinja2", {
+    return templates.TemplateResponse("player.html.jinja2", {
         "request": request, "ws_url": ws_url, "is_host": "false" ,
         "opponent_nickname": opponent_nickname, 'error': error})
 
@@ -83,7 +83,6 @@ async def websocket_player1(websocket: WebSocket, game_id: UUID):
 
 # TODO Test in heroku
 # TODO share
-
 # TODO 500 error page base
 # TODO expired
 # TODO multiplayer

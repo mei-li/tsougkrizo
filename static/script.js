@@ -73,6 +73,7 @@ function connect() {
       connecting_waiting_room(parsed_data);
     } else if ("outcome" in parsed_data)
     {
+      global.opponent_nickname = parsed_data.opponent;
       init_page_game(parsed_data.outcome);
       console.log("game init");
     }
@@ -117,8 +118,8 @@ function init_waiting_room()
   if (global.username == null) {console.log("error initing waiting room. Why is username unset?");}
   if (global.is_host) {
     $('#button-invitation').addClass('active');
-    $("#page-waiting-room .instructions").html("<b>Στείλε</b> τη παρακάτω πρόσκληση σε ένα φίλο για να τσουγκρίσετε το αυγό σας παρεα!");
-    $('#button-invitation p').html("Πρόσκληση");
+    $("#page-waiting-room .instructions").html("Στείλε μια πρόσκληση σε ενα φίλο ώστε να τσουγκρίσετε το αυγό σας παρέα");
+    $('#button-invitation p').html("Αποστολή");
   } else{
     console.log('init waiting room Here is the friend ')
     $('#button-invitation').removeClass('active');
@@ -130,7 +131,8 @@ function connecting_waiting_room(friend_url)
 {
   if (global.is_host){
     $("#button-invitation p").html("Επαναποστολή");
-    $("#page-waiting-room .instructions").html("Αναμονή για σύνδεση φίλου! Μην κλείσεις αυτό το παράθυρο <br> Πάτα το πλήκτρο για να ξαναστείλεις την πρόσκληση ή στείλε του τον παρακάτω σύνδεσμο <br> <b>"+friend_url["invitation_url"]+"</b>");
+    $("#page-waiting-room .instructions").html("Αναμονή σύνδεσης, <br> μην κλείσεις αυτό το παράθυρο</p>");
+    $("#page-waiting-room .notes").html("<p> Μπορείς να ξαναστείλεις την πρόσκληση αντιγράφοντας χειροκίνητα τον σύνδεσμο </p><p class=\"light-text\">"+friend_url["invitation_url"]+"</p><p>ή πατώντας παρακάτω</p>");
   }else{
     console.log('Connect waiting room Here is the friend ')
     connect();
@@ -166,6 +168,9 @@ function init_page_game(eggroll)
   if("HYPE_eventListeners" in window === false) {
     window.HYPE_eventListeners = Array();
   }
+  //patch???
+  /*console.log(eggroll);
+  global.opponent_nickname=eggroll["opponent"];*/
   window.HYPE_eventListeners.push({"type":"HypeTimelineComplete", "callback": timeline_finished});
   HYPE.documents['eggs_animated01'].customData['front']=eggroll["front"];
   HYPE.documents['eggs_animated01'].customData['back']=eggroll["back"];
@@ -192,9 +197,12 @@ function send_new_invite(e) {
   //ToDo meili: do your websocket magic for the new host
   //if you were already a host, do you need to make a new room or keep the same?
   // 
-
+  window.location = "/";
   //when done, goto send invitation/initialize waiting room
-  HYPE.documents['eggs_animated01'].startTimelineNamed('Main Timeline', HYPE.documents['eggs_animated01'].kDirectionForward);
+  //
+  // No need to execute following "reset" code since we reset the hard way!
+  //
+  /*HYPE.documents['eggs_animated01'].startTimelineNamed('Main Timeline', HYPE.documents['eggs_animated01'].kDirectionForward);
   HYPE.documents['eggs_animated01'].goToTimeInTimelineNamed(0,'Bump Timeline Butt');
   HYPE.documents['eggs_animated01'].goToTimeInTimelineNamed(0,'Bump Timeline');
   $('#loading-icon').removeClass('active');
@@ -207,7 +215,7 @@ function send_new_invite(e) {
     $('#page-results').removeClass('active');
       $('#page-results').removeClass('animated fadeOut faster');
       $('#page-waiting-room').removeClass('animated fadeIn slow');
-  }, 800);
+  }, 800);*/
 }
 
 function init_results_page() {
@@ -215,10 +223,13 @@ function init_results_page() {
 
   $('#page-results .template').clone().insertAfter('#page-results .template');
   $('#page-results .template:last').removeAttr("style");
-  $('#page-results .template:last').addClass("results-card");
+  $('#page-results .template:last').addClass("results-card animated tada delay-3s slow");
   $('#page-results .template:last').removeClass("template");
-
+  $(".results-card:first .versus-title").html(global.username + " VS " +global.opponent_nickname);
+  
+  $(".results-card:first .tag-line").html("Το αυγό έσπασε, αλλά δεν πειράζει καθόλου! <br> Και του χρόνου με υγεία!");
   if ((global.last_eggroll.front) && (global.last_eggroll.back)){
+    $(".results-card:first .tag-line").html("Το αυγό σου αποδείχθηκε πρωταθλητής! Πάντα Καλότυχος!");
     $(".results-card:first img.egg-cracked-tip").remove();
     $(".results-card:first img.egg-cracked-butt").remove();
     $(".results-card:first img.egg-cracked-both").remove();
@@ -245,7 +256,6 @@ function init_results_page() {
       $('#page-game').removeClass('animated fadeOut faster');
       $('#page-results').removeClass('animated fadeIn slow');
   }, 800);
-  $(".results-card-1 img.egg-result").html("Πρόσκληση");
 }
 
 function init_error_page(){
