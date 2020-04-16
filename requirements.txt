@@ -2,3 +2,4 @@ fastapi==0.54.1
 uvicorn==0.11.3
 Jinja2==2.11.1
 aiofiles==0.4.0
+sentry_sdk==0.14.3
