@@ -38,6 +38,17 @@ function connect() {
   ws.onopen = function(){
     ws.send(JSON.stringify({"username": global.username}));
   }
+  ws.onclose = function(e) {
+    console.log('Socket is closed. Reconnect will be attempted in 1 second.', e.reason);
+    setTimeout(function() {
+      connect();
+    }, 1000);
+  };
+
+  ws.onerror = function(err) {
+    console.error('Socket encountered error: ', err.message, 'Closing socket');
+    ws.close();
+  };
   ws.onmessage = function(event) {
     var data;
     data = event.data;

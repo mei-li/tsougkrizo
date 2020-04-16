@@ -63,16 +63,17 @@ async def get_ela(request: Request, game_id: UUID):
 async def websocket_player1(websocket: WebSocket, game_id: UUID):
     await websocket.accept()
     game_id = str(game_id)
-    egg_pairs[game_id] = {
-        'websocket': websocket,
-        'username': None,
-        'outcome': None
-    }
-    data = await websocket.receive_json()
-    egg_pairs[game_id]['username'] = read_username(data)
-    print("In player 1", game_id, egg_pairs[game_id]['username'], flush=True)
-    player_url = websocket.url_for('get_ela', game_id=game_id)
-    await websocket.send_json({'invitation_url': player_url})
+    if game_id not in egg_pairs:
+        egg_pairs[game_id] = {
+            'websocket': websocket,
+            'username': None,
+            'outcome': None
+        }
+        data = await websocket.receive_json()
+        egg_pairs[game_id]['username'] = read_username(data)
+        print("In player 1", game_id, egg_pairs[game_id]['username'], flush=True)
+        player_url = websocket.url_for('get_ela', game_id=game_id)
+        await websocket.send_json({'invitation_url': player_url})
     # TO keep socket alive until player2 joins
     data = await websocket.receive_json()
 
