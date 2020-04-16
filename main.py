@@ -76,16 +76,16 @@ async def websocket_player1(websocket: WebSocket, game_id: UUID):
     # TO keep socket alive until player2 joins
     data = await websocket.receive_json()
 
-# player 2 joins game is played by sb else
-# player 2 joins player 1 is disconnected
-# player 2 joins player 1 is not there any more
-# TODO sync with Fotis about multiplayer support (only consider)
-# TODO sync with Fotis about expired, already played, error page
-# TODO for fotis: player 2 name, share button, crashing effect (can it be for many outcomes?), 3 corner cases above
+# TODO Test in heroku
+# TODO share
 
-# TODO error page for internal error
-# TODO when host's nickname is the same to the guest's nickname
+# TODO 500 error page base
+# TODO expired
+# TODO multiplayer
 
+
+# Covered scenarios
+# ==================
 # Player 1 closes browser
 # --- Player 2 joins and plays with a ghost [no errors]
 # --- Player 2 joins after key is expired -> message for invalid
@@ -94,8 +94,8 @@ async def websocket_player1(websocket: WebSocket, game_id: UUID):
 # ------ Javascript reconnect to same game_id
 
 # Player 2 comes, but game is played with someone else
+#                       -> -> message for invalid
 
-# TODO javascript reconnection
 
 async def inform_player1(game_id, player2):
     try:
