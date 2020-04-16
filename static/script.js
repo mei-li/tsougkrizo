@@ -8,11 +8,14 @@ var global = {
     back: null,
     front: null
   },
+  error: error,
+  timeout: 1000,  // milliseconds to retry failed socket connection for host
 };
 var setnamebutton = document.getElementById("setname");
 var invitationbutton = document.getElementById("button-invitation");
 var nicknamefield = document.getElementById('nickname');
 var buttonnewinvitation = document.getElementById("button-new-invitation");
+var buttonreset = document.getElementById("button-reset");
 
 nicknamefield.addEventListener('keydown', function (e) {if (e.key === "Enter" && nicknamefield.checkValidity()) {
   console.log(nicknamefield.checkValidity());
@@ -26,15 +29,39 @@ buttonnewinvitation.addEventListener('click', function (e) {
   send_new_invite(e);
 });
 
+buttonreset.addEventListener('click', function (e) {
+  //reset the app button
+  window.location = "/";
+});
+
+if (global.error != ''){
+  handle_invalid_game();
+}
+
 function connect() {
+  // Websocket handling
   ws = new WebSocket(ws_url);
   var parsed_data;
   ws.onopen = function(){
     ws.send(JSON.stringify({"username": global.username}));
   }
+  ws.onclose = function(e) {
+    if (global.is_host){
+      console.log('Socket is closed. Reconnect will be attempted in 1 second.', e.reason);
+      setTimeout(function() {
+        connect();
+      }, global.timeout);
+      global.timeout = global.timeout*2;
+    }
+  };
+
+  ws.onerror = function(err) {
+    console.error('Socket encountered error: ', err.message, 'Closing socket');
+    ws.close();
+  };
   ws.onmessage = function(event) {
     var data;
-    data = event.data; /// here is the friend url
+    data = event.data;
     try {
       parsed_data= JSON.parse(data);
     } catch (ex) {
@@ -50,18 +77,27 @@ function connect() {
       init_page_game(parsed_data.outcome);
       console.log("game init");
     }
+    else if ("error" in parsed_data){
+        handle_invalid_game()
+    }
     else {
       console.log("oh oh, websockets returned something else...");
     }
   };
 }
 
+function handle_invalid_game(){
+  console.log("ERORRRRROORORR");
+  init_error_page();
+}
+
+
 invitationbutton.addEventListener('click', function(e) {
   connect();
   e.preventDefault();
 });
 
-function setnickname_and_progress(e) { // only for host
+function setnickname_and_progress(e) {
   e.preventDefault();
   console.log('Nickname and progress')
   global.username = $('#nickname')[0].value; 
@@ -220,6 +256,17 @@ function init_results_page() {
       $('#page-game').removeClass('animated fadeOut faster');
       $('#page-results').removeClass('animated fadeIn slow');
   }, 800);
- 
+}
 
+function init_error_page(){
+  var $previous_page = $('.container.active');
+  $previous_page.addClass('animated fadeOut faster');
+  $('#page-error').addClass('animated fadeIn slow');
+  $('#page-error').addClass('active');
+  $("#page-error .instructions").html("Αυτός ο σύνδεσμος δεν είναι έγκυρος πλέον");
+  setTimeout(function(){
+    $previous_page.removeClass('active');
+      $previous_page.removeClass('animated fadeOut faster');
+      $('#page-error').removeClass('animated fadeIn slow');
+  }, 800);
 }
