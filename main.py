@@ -31,13 +31,13 @@ def calculate_winner():
 async def get(request: Request):
     game_id = str(uuid4())
     ws_url = request.url_for("websocket_player1", game_id=game_id)
-    return templates.TemplateResponse("base01.html.jinja2", {
+    return templates.TemplateResponse("player.html.jinja2", {
         "request": request, "ws_url": ws_url, "is_host": "true" })
 
 @app.get("/{game_id}/join")
 async def get_ela(request: Request, game_id: UUID):
     ws_url = request.url_for("websocket_player2", game_id=game_id)
-    return templates.TemplateResponse("base01.html.jinja2", {
+    return templates.TemplateResponse("player.html.jinja2", {
         "request": request, "ws_url": ws_url, "is_host": "false" , "opponent_nickname": egg_pairs[game_id]['username']})
 
 @app.websocket("/ws/{game_id}")
