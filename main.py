@@ -1,8 +1,11 @@
+import os
 import json
 import uvicorn
 from contextlib import suppress
 import random
 from uuid import UUID, uuid4
+
+import sentry_sdk
 
 from fastapi import FastAPI, WebSocket, Request
 from fastapi.responses import HTMLResponse
@@ -10,10 +13,19 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 
 app = FastAPI()
+sentry_sdk.init(os.environ.get('SENTRY_DSN'))
+
 
 app.mount("/static", StaticFiles(directory="static"), name="static")
 templates = Jinja2Templates(directory="templates")
 
+##### Exception handling
+@app.exception_handler(Exception)
+async def catch_all_exception_handler(request, exc):
+    sentry_sdk.capture_exception(exc)
+    raise exc
+
+#############################
 
 # add expiration
 # fix urls
