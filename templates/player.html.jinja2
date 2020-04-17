@@ -72,7 +72,7 @@
 				<button class="copy-link">Αντιγραφή</button>
 			</div>
 		</div>
-		<!--- ToDo: add share app button value="Τσούγκρισε αυγά με την παρέα σου με λίγα μόλις κλικ ανοίγοντας το tsougkrizo! {{ url_for("get") }} -->
+		<!--- ToDo: add share app button value="Τσούγκρισε αυγά με την παρέα σου με λίγα μόλις κλικ ανοίγοντας το tsougkrizo! {{ url_for("host") }} -->
 
 		<!-- <button class="share-button" type="button" title="Συνδέσμος Πρόσκλησης">
 		<svg>
@@ -89,4 +89,9 @@
 		</defs>
 		</svg>
 	</div>
+{% endblock %}
+{% block last %}
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js">
+</script>
+  <script src="{{ url_for('static', path='/script.js') }}"></script>
 {% endblock %}
