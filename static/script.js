@@ -9,6 +9,7 @@ var global = {
     front: null
   },
   error: error,
+  game_played: false,
   timeout: 1000,  // milliseconds to retry failed socket connection for host
 };
 var setnamebutton = document.getElementById("setname");
@@ -50,7 +51,7 @@ function connect(onurl) {
     ws.send(JSON.stringify({"username": global.username}));
   }
   ws.onclose = function(e) {
-    if (global.is_host){
+    if (global.is_host && !global.game_played){ // TODO should change for multiplayer
       console.log('Socket is closed. Reconnect will be attempted in 1 second.', e.reason);
       setTimeout(function() {
         connect();
@@ -78,6 +79,7 @@ function connect(onurl) {
     } else if ("outcome" in parsed_data)
     {
       global.opponent_nickname = parsed_data.opponent;
+      global.game_played = true;
       init_page_game(parsed_data.outcome);
       console.log("game init");
     }
