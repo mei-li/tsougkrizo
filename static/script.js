@@ -100,7 +100,7 @@ invitationbutton.addEventListener('click', function(e) {
 function setnickname_and_progress(e) {
   e.preventDefault();
   console.log('Nickname and progress')
-  global.username = $('#nickname')[0].value; 
+  global.username = $('#nickname')[0].value;
   //initialize waiting room
   init_waiting_room();
   $('#page-nickname').addClass('animated fadeOut faster');
@@ -124,7 +124,7 @@ function init_waiting_room()
     console.log('init waiting room Here is the friend ')
     $('#button-invitation').removeClass('active');
     connecting_waiting_room(null);//don't ask to send invite, skip straight to connecting!
-  } 
+  }
 }
 
 function connecting_waiting_room(friend_url)
@@ -141,7 +141,7 @@ function connecting_waiting_room(friend_url)
   }
   $('#loading-icon').addClass('animated fadeIn faster');
   $('#loading-icon').addClass('active');
-  setTimeout(function(){	
+  setTimeout(function(){
       $('#loading-icon').removeClass('animated fadeIn faster');
   }, 500);
 }
@@ -156,7 +156,7 @@ function timeline_finished(hypeDocument, element, event) {
       return false;
     }
   }
-  
+
 }
 
 function init_page_game(eggroll)
@@ -196,7 +196,7 @@ function send_new_invite(e) {
 
   //ToDo meili: do your websocket magic for the new host
   //if you were already a host, do you need to make a new room or keep the same?
-  // 
+  //
   window.location = "/";
   //when done, goto send invitation/initialize waiting room
   //
@@ -226,7 +226,7 @@ function init_results_page() {
   $('#page-results .template:last').addClass("results-card animated tada delay-3s slow");
   $('#page-results .template:last').removeClass("template");
   $(".results-card:first .versus-title").html(global.username + " VS " +global.opponent_nickname);
-  
+
   $(".results-card:first .tag-line").html("Το αυγό έσπασε, αλλά δεν πειράζει καθόλου! <br> Και του χρόνου με υγεία!");
   if ((global.last_eggroll.front) && (global.last_eggroll.back)){
     $(".results-card:first .tag-line").html("Το αυγό σου αποδείχθηκε πρωταθλητής! Πάντα Καλότυχος!");
