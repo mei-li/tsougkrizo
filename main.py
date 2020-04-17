@@ -52,10 +52,7 @@ async def catch_all_exception_handler(request, exc):
 # connection issue cases, reload
 # stress test
 
-# TODO ab
 # TODO add redis (expired)
-# TODO share
-# TODO 500 error page base - how to?
 # TODO expired
 # TODO multiplayer
 
