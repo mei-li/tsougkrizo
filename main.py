@@ -56,7 +56,7 @@ async def get_ela(request: Request, game_id: UUID):
     game_id = str(game_id)
     error = ErrorCode.invalid_game if game_id not in egg_pairs else ''
     if error:
-        print(f"In /{game_id}/join: Error game id not in {egg_pairs.keys()}")
+        print(f"In /{game_id}/join: Error game id not in {egg_pairs.keys()}", flush=True)
     opponent_nickname = egg_pairs[game_id]['username'] if not error else ''
     ws_url = request.url_for("websocket_player2", game_id=game_id)
     return templates.TemplateResponse("player.html.jinja2", {
@@ -112,7 +112,7 @@ async def inform_player1(game_id, player2):
     # TODO handle disconnect
     with contextlib.suppress(RuntimeError):
         await websocket.send_json({'outcome': game['outcome'], 'opponent': player2})
-    print(f"Removing game id: {game_id}")
+    print(f"Removing game id: {game_id}", flush=True)
     del egg_pairs[game_id]
 
 def read_username(data):
