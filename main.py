@@ -108,8 +108,9 @@ async def inform_player1(game_id, player2):
         return
     websocket = game['websocket']
     # TODO handle disconnect
-    await websocket.send_json({'outcome': game['outcome'], 'opponent': player2})
-    print("Removing game id")
+    with contextlib.suppress(RuntimeError):
+        await websocket.send_json({'outcome': game['outcome'], 'opponent': player2})
+    print(f"Removing game id: {game_id}")
     del egg_pairs[game_id]
 
 def read_username(data):
