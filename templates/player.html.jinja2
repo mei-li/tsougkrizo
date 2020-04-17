@@ -64,21 +64,22 @@
 	<div class="share-container" style="">
 		<div class="share-dialog">
 			<header>
-				<h3 class="dialog-title">Share this pen</h3>
+				<h3 class="dialog-title">Στείλτε τον παρακάτω σύνδεσμο</h3>
 				<button class="close-button"><svg><use href="#close"></use></svg></button>
 			</header>
 			<div class="link">
-				<div class="pen-url">https://codepen.io/ayoisaiah/pen/YbNazJ</div>
-				<button class="copy-link">Copy Link</button>
+				<div class="export-url"><input type="text" id="copied-url"></div>
+				<button class="copy-link">Αντιγραφή</button>
 			</div>
 		</div>
+		<!--- ToDo: add share app button value="Τσούγκρισε αυγά με την παρέα σου με λίγα μόλις κλικ ανοίγοντας το tsougkrizo! {{ url_for("get") }} -->
 
-		<button class="share-button" type="button" title="Share this article">
+		<!-- <button class="share-button" type="button" title="Συνδέσμος Πρόσκλησης">
 		<svg>
 			<use href="#share-icon"></use>
 		</svg>
 		<span>Share</span>
-		</button>
+		</button>-->
 
 		<svg class="hidden">
 		<defs>
