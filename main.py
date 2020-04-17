@@ -13,6 +13,7 @@ from fastapi.responses import HTMLResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from starlette.websockets import WebSocketDisconnect
+from starlette.exceptions import HTTPException as StarletteHTTPException
 
 app = FastAPI()
 sentry_sdk.init(os.environ.get('SENTRY_DSN'))
@@ -28,6 +29,13 @@ class ErrorCode:
 
 class GameError(Exception):
     pass
+
+@app.exception_handler(StarletteHTTPException)
+async def http_exception_handler(request, exc):
+    return templates.TemplateResponse(
+        "error.html.jinja2", {
+        "request": request,
+        }, status_code=exc.status_code)
 
 
 @app.exception_handler(Exception)
