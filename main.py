@@ -21,14 +21,20 @@ sentry_sdk.init(os.environ.get('SENTRY_DSN'))
 app.mount("/static", StaticFiles(directory="static"), name="static")
 templates = Jinja2Templates(directory="templates")
 
+
 class ErrorCode:
     invalid_game = 'INVALID_GAME'
 
-##### Exception handling
+
+class GameError(Exception):
+    pass
+
+
 @app.exception_handler(Exception)
 async def catch_all_exception_handler(request, exc):
     sentry_sdk.capture_exception(exc)
     raise exc
+
 
 #############################
 
@@ -37,55 +43,10 @@ async def catch_all_exception_handler(request, exc):
 
 # connection issue cases, reload
 # stress test
-egg_pairs = {}
 
-
-def calculate_winner():
-    return bool(random.randint(0, 1))
-
-
-@app.get("/")
-async def get(request: Request):
-    game_id = str(uuid4())
-    ws_url = request.url_for("websocket_player1", game_id=game_id)
-    return templates.TemplateResponse("player.html.jinja2", {
-        "request": request, "ws_url": ws_url, "is_host": "true" })
-
-@app.get("/{game_id}/join")
-async def get_ela(request: Request, game_id: UUID):
-    game_id = str(game_id)
-    error = ErrorCode.invalid_game if game_id not in egg_pairs else ''
-    if error:
-        print(f"In /{game_id}/join: Error game id not in {egg_pairs.keys()}", flush=True)
-    opponent_nickname = egg_pairs[game_id]['username'] if not error else ''
-    ws_url = request.url_for("websocket_player2", game_id=game_id)
-    return templates.TemplateResponse("player.html.jinja2", {
-        "request": request, "ws_url": ws_url, "is_host": "false" ,
-        "opponent_nickname": opponent_nickname, 'error': error})
-
-@app.websocket("/ws/{game_id}")
-async def websocket_player1(websocket: WebSocket, game_id: UUID):
-    await websocket.accept()
-    game_id = str(game_id)
-    if game_id not in egg_pairs:
-        egg_pairs[game_id] = {
-            'websocket': websocket,
-            'username': None,
-            'outcome': None
-        }
-        data = await websocket.receive_json()
-        egg_pairs[game_id]['username'] = read_username(data)
-        print("In player 1", game_id, egg_pairs[game_id]['username'], flush=True)
-        player_url = websocket.url_for('get_ela', game_id=game_id)
-        await websocket.send_json({'invitation_url': player_url})
-    # TO keep socket alive until player2 joins
-    with contextlib.suppress(WebSocketDisconnect):
-        data = await websocket.receive_json()
-
-
-# TODO Test in heroku
+# TODO add redis (expired)
 # TODO share
-# TODO 500 error page base
+# TODO 500 error page base - how to?
 # TODO expired
 # TODO multiplayer
 
@@ -103,43 +64,55 @@ async def websocket_player1(websocket: WebSocket, game_id: UUID):
 #                       -> -> message for invalid
 
 
-async def inform_player1(game_id, player2):
-    try:
-        game = egg_pairs[game_id]
-    except KeyError:
-        return
-    websocket = game['websocket']
-    # TODO handle disconnect
-    with contextlib.suppress(RuntimeError):
-        await websocket.send_json({'outcome': game['outcome'], 'opponent': player2})
-    print(f"Removing game id: {game_id}", flush=True)
-    del egg_pairs[game_id]
 
-def read_username(data):
-    if not 'username' in data:
-        raise Exception('Invalid message in websocket')
-    return data['username']
-
-class GameError(Exception):
-    pass
+egg_pairs = {}
 
 
-def get_game(game_id):
-    try:
-        game = egg_pairs[game_id]
-    except KeyError:
-        print(f"Player 2: Game id: {game_id} not in dict: {egg_pairs.keys()}", flush=True)
-        raise GameError('Game invalid')
-    if game['outcome']:
-        print(f"Player 2: Game id: {game_id} already played: {game}", flush=True)
-        raise GameError('Already played')
-    return game
+@app.get("/")
+async def host(request: Request):
+    game_id = str(uuid4())
+    ws_url = request.url_for("websocket_host", game_id=game_id)
+    return templates.TemplateResponse("player.html.jinja2", {
+        "request": request, "ws_url": ws_url, "is_host": "true" })
 
-@app.websocket("/ws/{game_id}/ela")
-async def websocket_player2(websocket: WebSocket, game_id: UUID):
+
+@app.get("/{game_id}/join")
+async def join(request: Request, game_id: UUID):
+    game_id = str(game_id)
+    error = ErrorCode.invalid_game if game_id not in egg_pairs else ''
+    if error:
+        print(f"In /{game_id}/join: Error game id not in {egg_pairs.keys()}", flush=True)
+    opponent_nickname = egg_pairs[game_id]['username'] if not error else ''
+    ws_url = request.url_for("websocket_join", game_id=game_id)
+    return templates.TemplateResponse("player.html.jinja2", {
+        "request": request, "ws_url": ws_url, "is_host": "false" ,
+        "opponent_nickname": opponent_nickname, 'error': error})
+
+
+@app.websocket("/ws/{game_id}")
+async def websocket_host(websocket: WebSocket, game_id: UUID):
+    await websocket.accept()
+    game_id = str(game_id)
+    if game_id not in egg_pairs:
+        egg_pairs[game_id] = {
+            'websocket': websocket,
+            'username': None,
+            'outcome': None
+        }
+        data = await websocket.receive_json()
+        egg_pairs[game_id]['username'] = read_username(data)
+        print("In player 1", game_id, egg_pairs[game_id]['username'], flush=True)
+        player_url = websocket.url_for('join', game_id=game_id)
+        await websocket.send_json({'invitation_url': player_url})
+    # To keep socket alive until player2 joins
+    with contextlib.suppress(WebSocketDisconnect):
+        data = await websocket.receive_json()
+
+
+@app.websocket("/ws/{game_id}/join")
+async def websocket_join(websocket: WebSocket, game_id: UUID):
     game_id = str(game_id)
     await websocket.accept()
-    # TODO multiplayer
     try:
         game = get_game(game_id)
     except GameError:
@@ -155,7 +128,41 @@ async def websocket_player2(websocket: WebSocket, game_id: UUID):
     result2 = {'back': not back, 'front': not front}
 
     await websocket.send_json({'outcome': result2, 'opponent': game['username']})
-    await inform_player1(game_id, username)
+    await inform_host(game_id, username)
+
+
+async def inform_host(game_id, opponent):
+    try:
+        game = egg_pairs[game_id]
+    except KeyError:
+        return
+    websocket = game['websocket']
+    with contextlib.suppress(RuntimeError):
+        await websocket.send_json({'outcome': game['outcome'], 'opponent': opponent})
+    print(f"Removing game id: {game_id}", flush=True)
+    del egg_pairs[game_id]
+
+
+def calculate_winner():
+    return bool(random.randint(0, 1))
+
+
+def read_username(data):
+    if not 'username' in data:
+        raise Exception('Invalid message in websocket')
+    return data['username']
+
+
+def get_game(game_id):
+    try:
+        game = egg_pairs[game_id]
+    except KeyError:
+        print(f"Player 2: Game id: {game_id} not in dict: {egg_pairs.keys()}", flush=True)
+        raise GameError('Game invalid')
+    if game['outcome']:
+        print(f"Player 2: Game id: {game_id} already played: {game}", flush=True)
+        raise GameError('Already played')
+    return game
 
 
 if __name__ == "__main__":
