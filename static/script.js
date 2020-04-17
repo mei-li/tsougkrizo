@@ -296,11 +296,11 @@ function init_results_page() {
     $(".results-card:first img.egg-cracked-tip").remove();
     $(".results-card:first img.egg-cracked-butt").remove();
     $(".results-card:first img.egg-cracked-both").remove();
-  } else if (global.last_eggroll.front) {
+  } else if (global.last_eggroll.back) {
     $(".results-card:first img.egg-champion").remove();
     $(".results-card:first img.egg-cracked-butt").remove();
     $(".results-card:first img.egg-cracked-both").remove();
-  } else if (global.last_eggroll.back){
+  } else if (global.last_eggroll.front){
     $(".results-card:first img.egg-champion").remove();
     $(".results-card:first img.egg-cracked-tip").remove();
     $(".results-card:first img.egg-cracked-both").remove();
