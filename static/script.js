@@ -118,7 +118,7 @@ function init_waiting_room()
   if (global.username == null) {console.log("error initing waiting room. Why is username unset?");}
   if (global.is_host) {
     $('#button-invitation').addClass('active');
-    $("#page-waiting-room .instructions").html("Στείλε μια πρόσκληση σε ενα φίλο ώστε να τσουγκρίσετε το αυγό σας παρέα");
+    $("#page-waiting-room .instructions").html("Στείλε μια πρόσκληση σε ένα αγαπημένο σου πρόσωπο και τσουγκρίστε παρέα!");
     $('#button-invitation p').html("Αποστολή");
   } else{
     console.log('init waiting room Here is the friend ')
