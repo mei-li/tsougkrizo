@@ -12,6 +12,9 @@ var global = {
   game_played: false,
   timeout: 1000,  // milliseconds to retry failed socket connection for host
 };
+
+Sentry.init({ dsn: 'https://195894b38c894c25ba5c4111599fb9d7@o378832.ingest.sentry.io/5202856' });
+
 var setnamebutton = document.getElementById("setname");
 var invitationbutton = document.getElementById("button-invitation");
 var nicknamefield = document.getElementById('nickname');
@@ -20,6 +23,7 @@ var buttonreset = document.getElementById("button-reset");
 const shareDialog = document.querySelector('.share-dialog');
 const closeButton = document.querySelector('.close-button');
 const copyButton = document.querySelector('.copy-link');
+
 
 nicknamefield.addEventListener('keydown', function (e) {if (e.key === "Enter" && nicknamefield.checkValidity()) {
   console.log(nicknamefield.checkValidity());
