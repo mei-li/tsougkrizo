@@ -132,20 +132,9 @@ invitationbutton.addEventListener('click', function(e) {
 });
 
 function displayShare(shareablelink){
-    //11  if (shareablelink) {
-    //this means it was returned by connect() with friend_url, oh spaghetti!
-    //1   $("#copied-url").attr("value",shareablelink);
-    //1   $("#copied-url").addClass("socket-open");
-    //1 } else {
-    //else, assume this was the re-send button and there was enough time
-    //to build get the friend_url
-    //in other words assume this is the re-send button calling it
-    /*1  if ($("#copied-url").hasClass("socket-open")){
-    1    setTimeout(function() {
-    1    }, 750);
-    1  }*/
-    $("#copied-url").attr("value", shareablelink);
 
+  $("#copied-url").attr("value", shareablelink);
+  
   if (navigator.share) { 
     navigator.share({
       title: 'Πρόσκληση για Τσούγκρισμα',
