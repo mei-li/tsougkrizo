@@ -26,16 +26,18 @@ nicknamefield.addEventListener('keydown', function (e) {if (e.key === "Enter" &&
   setnickname_and_progress(e);}
 });
 setnamebutton.addEventListener('click', function (e) {
-  setnickname_and_progress(e)
+  setnickname_and_progress(e);
 });
 buttonnewinvitation.addEventListener('click', function (e) {
   //go back to the waiting room (if you were a guest, now you are host)
   send_new_invite(e);
+  gaEvent("play_again");
 });
 
 buttonreset.addEventListener('click', function (e) {
   //reset the app button
   window.location = "/";
+
 });
 
 if (global.error != ''){
@@ -94,6 +96,7 @@ function connect(onurl) {
 
 function handle_invalid_game(){
   console.log("ERORRRRROORORR");
+  gaEvent("error_page");
   init_error_page();
 }
 
@@ -131,9 +134,11 @@ invitationbutton.addEventListener('click', function(e) {
   $("#button-invitation p").addClass("animated pulse infinite slow delay-1s");
   if (shareablelink){
     console.log('Resend: ' + shareablelink);
+    gaEvent("reshare_game");
     displayShare(shareablelink);
   }
   else {
+    gaEvent("share_game");
     connect(displayShare);
   }
   e.preventDefault();
@@ -142,7 +147,6 @@ invitationbutton.addEventListener('click', function(e) {
 function displayShare(shareablelink){
 
   $("#copied-url").attr("value", shareablelink);
-
   if (navigator.share) {
     navigator.share({
       title: 'Πρόσκληση για Τσούγκρισμα',
@@ -163,6 +167,7 @@ function setnickname_and_progress(e) {
   e.preventDefault();
   console.log('Nickname and progress')
   global.username = $('#nickname')[0].value;
+  gaEvent("name_set");
   //initialize waiting room
   init_waiting_room();
   $('#page-nickname').addClass('animated fadeOut faster');
@@ -311,7 +316,11 @@ function init_results_page() {
     $(".results-card:first img.egg-cracked-tip").remove();
     $(".results-card:first img.egg-cracked-butt").remove();
   }
-
+  if (global.is_host){
+    gaEvent("game_played_host");
+  }else{
+    gaEvent("game_played_guest");
+  }
   //ToDo (for multiplayer): dynamically add .results-card-N with results for current match, at the top
   $('#page-game').addClass('animated fadeOut faster');
   $('#page-results').addClass('animated fadeIn slow');
@@ -334,4 +343,10 @@ function init_error_page(){
       $previous_page.removeClass('animated fadeOut faster');
       $('#page-error').removeClass('animated fadeIn slow');
   }, 800);
+}
+
+function gaEvent(action) {
+  if (gtag){
+    gtag('event',action);
+  }
 }
