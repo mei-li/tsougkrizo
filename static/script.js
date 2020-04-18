@@ -60,7 +60,7 @@ function connect(onurl) {
     if (global.is_host && !global.game_played){ // TODO should change for multiplayer
       console.log('Socket is closed. Reconnect will be attempted in 1 second.', e.reason);
       setTimeout(function() {
-        connect();
+        connect(onurl);
       }, global.timeout);
       global.timeout = global.timeout*2;
     }
