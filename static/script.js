@@ -132,24 +132,14 @@ invitationbutton.addEventListener('click', function(e) {
 });
 
 function displayShare(shareablelink){
-    //11  if (shareablelink) {
-    //this means it was returned by connect() with friend_url, oh spaghetti!
-    //1   $("#copied-url").attr("value",shareablelink);
-    //1   $("#copied-url").addClass("socket-open");
-    //1 } else {
-    //else, assume this was the re-send button and there was enough time
-    //to build get the friend_url
-    //in other words assume this is the re-send button calling it
-    /*1  if ($("#copied-url").hasClass("socket-open")){
-    1    setTimeout(function() {
-    1    }, 750);
-    1  }*/
-    $("#copied-url").attr("value", shareablelink);
+
+  $("#copied-url").attr("value", shareablelink);
 
   if (navigator.share) { 
     navigator.share({
-       title: 'Πρόσκληση για τσούγκρισμα',
-       url: shareablelink
+      title: 'Πρόσκληση για Τσούγκρισμα',
+      text: 'Ο/η ' + global.username + ' σε προσκάλεσε να τσουγκρίσετε αυγά! Πάτησε στον παρακάτω σύνδεσμο για να ανταποκριθείς: ' + shareablelink,
+      url: shareablelink
     }).then(() => {
       console.log('Thanks for sharing!');
       connecting_waiting_room();
@@ -181,7 +171,7 @@ function init_waiting_room()
   if (global.username == null) {console.log("error initing waiting room. Why is username unset?");}
   if (global.is_host) {
     $('#button-invitation').addClass('active');
-    $("#page-waiting-room .instructions").html("Στείλε μια πρόσκληση σε ενα φίλο ώστε να τσουγκρίσετε το αυγό σας παρέα");
+    $("#page-waiting-room .instructions").html("Στείλε μια πρόσκληση σε ένα αγαπημένο σου πρόσωπο και τσουγκρίστε παρέα!");
     $('#button-invitation p').html("Αποστολή <svg><use href=\"#share-icon\"></use></svg>");
   } else{
     console.log('init waiting room here is the friend ')
@@ -193,14 +183,14 @@ function init_waiting_room()
 function connecting_waiting_room()
 {
   if (global.is_host){
-    $("#button-invitation p").html("Επαναποστολή");
-    $("#page-waiting-room .instructions").html("Αναμονή σύνδεσης, <br> μην κλείσεις αυτό το παράθυρο</p>");
-    $("#page-waiting-room .notes").html("<p> Μπορείς να ξαναστείλεις την πρόσκληση</p>");
+    $("#button-invitation p").html("Επαναποστολή <svg><use href=\"#share-icon\"></use></svg>");
+    $("#page-waiting-room .instructions").html("Αναμονή σύνδεσης, κράτησε αυτό το παράθυρο ανοιχτό. </p>");
+    $("#page-waiting-room .notes").html("<p> Μπορείς να ξαναστείλεις την πρόσκληση πατώντας το παρακάτω πλήκτρο. Κάθε πρόσκληση μπορείς να την στείλεις σε ένα μόναχα άτομο</p>");
   }else{
-    console.log('Connect waiting room Here is the friend ')
+    console.log('friends has arrived ')
     connect();
     $("#button-invitation p").html("Πρόσκληση");
-    $("#page-waiting-room .instructions").html("Γίνεται σύνδεση στο παιχνίδι του <b>"+ global.opponent_nickname + "</b>");
+    $("#page-waiting-room .instructions").html("Γίνεται σύνδεση με τον <b>"+ global.opponent_nickname + "</b>");
   }
   $('#loading-icon').addClass('animated fadeIn faster');
   $('#loading-icon').addClass('active');
@@ -224,6 +214,7 @@ function timeline_finished(hypeDocument, element, event) {
 
 function init_page_game(eggroll)
 {
+  $('#loading-icon').removeClass('active');
   global.last_eggroll=eggroll;
   $('#page-waiting-room').addClass('animated fadeOut faster');
   $('#page-game').addClass('animated fadeIn slow');
@@ -246,10 +237,10 @@ function init_page_game(eggroll)
   setTimeout(function(){
     $('#page-waiting-room').removeClass('active');
       $('#page-waiting-room').removeClass('animated fadeOut faster');
-      $('#page-game').removeClass('animated fadeIn slow');
-  }, 800);
-  $('#myegg').addClass('animated slideInUp slow');
-  $('#enemyegg').addClass('animated slideInUp slow delay-1s');
+      $('#page-game').removeClass('animated fadeIn fast');
+  }, 400);
+  //$('#myegg').addClass('animated slideInUp slow');
+  //$('#enemyegg').addClass('animated slideInUp slow delay-1s');
 }
 
 function send_new_invite(e) {
@@ -290,7 +281,7 @@ function init_results_page() {
   $('#page-results .template:last').removeClass("template");
   $(".results-card:first .versus-title").html(global.username + " VS " +global.opponent_nickname);
 
-  $(".results-card:first .tag-line").html("Το αυγό έσπασε, αλλά δεν πειράζει καθόλου! <br> Και του χρόνου με υγεία!");
+  $(".results-card:first .tag-line").html("Το αυγό σου έσπασε, αλλά δεν πειράζει καθόλου! <br> Και του χρόνου με υγεία!");
   if ((global.last_eggroll.front) && (global.last_eggroll.back)){
     $(".results-card:first .tag-line").html("Το αυγό σου αποδείχθηκε πρωταθλητής! Πάντα Καλότυχος!");
     $(".results-card:first img.egg-cracked-tip").remove();
