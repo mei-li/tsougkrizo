@@ -140,7 +140,7 @@ function displayShare(shareablelink){
   if (navigator.share) {
     navigator.share({
       title: 'Πρόσκληση για Τσούγκρισμα',
-      text: 'Ο/η ' + global.username + ' σε προσκάλεσε να τσουγκρίσετε αυγά! Πάτησε στον παρακάτω σύνδεσμο για να ανταποκριθείς: ' + shareablelink,
+      text: 'Ο/η ' + global.username + ' σε προσκάλεσε να τσουγκρίσετε αυγά! Πάτησε τον σύνδεσμο για να ανταποκριθείς. ',
       url: shareablelink
     }).then(() => {
       console.log('Thanks for sharing!');
