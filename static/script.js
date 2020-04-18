@@ -134,7 +134,7 @@ invitationbutton.addEventListener('click', function(e) {
 function displayShare(shareablelink){
 
   $("#copied-url").attr("value", shareablelink);
-  
+
   if (navigator.share) { 
     navigator.share({
       title: 'Πρόσκληση για Τσούγκρισμα',
@@ -214,6 +214,7 @@ function timeline_finished(hypeDocument, element, event) {
 
 function init_page_game(eggroll)
 {
+  $('#loading-icon').removeClass('active');
   global.last_eggroll=eggroll;
   $('#page-waiting-room').addClass('animated fadeOut faster');
   $('#page-game').addClass('animated fadeIn slow');
@@ -236,10 +237,10 @@ function init_page_game(eggroll)
   setTimeout(function(){
     $('#page-waiting-room').removeClass('active');
       $('#page-waiting-room').removeClass('animated fadeOut faster');
-      $('#page-game').removeClass('animated fadeIn slow');
-  }, 800);
-  $('#myegg').addClass('animated slideInUp slow');
-  $('#enemyegg').addClass('animated slideInUp slow delay-1s');
+      $('#page-game').removeClass('animated fadeIn fast');
+  }, 400);
+  //$('#myegg').addClass('animated slideInUp slow');
+  //$('#enemyegg').addClass('animated slideInUp slow delay-1s');
 }
 
 function send_new_invite(e) {
