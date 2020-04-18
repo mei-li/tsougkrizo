@@ -112,6 +112,16 @@ async def host(request: Request):
         "request": request, "ws_url": ws_url, "is_host": "true" })
 
 
+@app.get("/{game_id}")
+async def results(request: Request, game_id: UUID):
+    results = game_manager.get_results(game_id)
+    game = game_manager.get_game(game_id)
+
+    websocket = game['websocket']
+    with contextlib.suppress(RuntimeError):
+        await websocket.send_json(results)
+
+
 @app.get("/{game_id}/join")
 async def join(request: Request, game_id: UUID):
     game = game_manager.get_game(game_id)
