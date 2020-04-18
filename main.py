@@ -193,9 +193,10 @@ def calculate_outcome():
 
 
 def read_username(data):
-    if not 'username' in data:
+    try:
+        return data['username']
+    except KeyError:
         raise Exception('Invalid message in websocket')
-    return data['username']
 
 
 if __name__ == "__main__":
