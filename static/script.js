@@ -54,7 +54,7 @@ function connect(onurl) {
   ws = new WebSocket(ws_url);
   var parsed_data;
   ws.onopen = function(){
-    ws.send(JSON.stringify({"username": global.username}));
+    this.send(JSON.stringify({"username": global.username}));
   }
   ws.onclose = function(e) {
     if (global.is_host && !global.game_played){ // TODO should change for multiplayer
@@ -95,6 +95,28 @@ function connect(onurl) {
     else {
       console.log("oh oh, websockets returned something else...");
     }
+  };
+  this.send = function (message, callback) {
+    this.waitForConnection(function () {
+        ws.send(message);
+        if (typeof callback !== 'undefined') {
+          callback();
+        }
+    }, 1000);
+  };
+
+  var interval = 100;
+  this.waitForConnection = function (callback, interval) {
+      if (ws.readyState === 1) {
+          callback();
+      } else {
+          var that = this;
+          // optional: implement backoff for interval here
+          setTimeout(function () {
+              that.waitForConnection(callback, interval);
+          }, interval);
+          interval = interval*2;
+      }
   };
 }
 
