@@ -3,7 +3,7 @@ import json
 import contextlib
 import uvicorn
 from contextlib import suppress
-import random
+from random import choices
 from uuid import UUID, uuid4
 
 import sentry_sdk
@@ -154,7 +154,7 @@ async def websocket_join(websocket: WebSocket, game_id: UUID):
     # Get player name
     data = await websocket.receive_json()
     username = read_username(data)
-    back, front = calculate_winner(), calculate_winner()
+    back, front = calculate_outcome()
     game['outcome'] = {'back': back, 'front': front}
     result2 = {'back': not back, 'front': not front}
 
@@ -172,8 +172,10 @@ async def inform_host(game, game_id, opponent):
     game_manager.remove_game(game_id)
 
 
-def calculate_winner():
-    return bool(random.randint(0, 1))
+def calculate_outcome():
+    population = [(True, True), (True, False), (False, True), (False, False)]
+    weights = [0.35, 0.15, 0.15, 0.35]
+    return choices(population, weights)[0]
 
 
 def read_username(data):
