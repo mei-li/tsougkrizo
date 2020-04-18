@@ -9,6 +9,7 @@ var global = {
     front: null
   },
   error: error,
+  game_played: false,
   timeout: 1000,  // milliseconds to retry failed socket connection for host
 };
 var setnamebutton = document.getElementById("setname");
@@ -16,6 +17,9 @@ var invitationbutton = document.getElementById("button-invitation");
 var nicknamefield = document.getElementById('nickname');
 var buttonnewinvitation = document.getElementById("button-new-invitation");
 var buttonreset = document.getElementById("button-reset");
+const shareDialog = document.querySelector('.share-dialog');
+const closeButton = document.querySelector('.close-button');
+const copyButton = document.querySelector('.copy-link');
 
 nicknamefield.addEventListener('keydown', function (e) {if (e.key === "Enter" && nicknamefield.checkValidity()) {
   console.log(nicknamefield.checkValidity());
@@ -38,7 +42,8 @@ if (global.error != ''){
   handle_invalid_game();
 }
 
-function connect() {
+function connect(onurl) {
+  //here
   // Websocket handling
   ws = new WebSocket(ws_url);
   var parsed_data;
@@ -46,7 +51,7 @@ function connect() {
     ws.send(JSON.stringify({"username": global.username}));
   }
   ws.onclose = function(e) {
-    if (global.is_host){
+    if (global.is_host && !global.game_played){ // TODO should change for multiplayer
       console.log('Socket is closed. Reconnect will be attempted in 1 second.', e.reason);
       setTimeout(function() {
         connect();
@@ -70,10 +75,11 @@ function connect() {
     console.log(parsed_data['invitation_url']);
     //dummy test for whether there is a URL in the response. Will need changes if websocket ever returns anything else
     if ("invitation_url" in parsed_data){
-      connecting_waiting_room(parsed_data);
+      onurl(parsed_data["invitation_url"]);
     } else if ("outcome" in parsed_data)
     {
       global.opponent_nickname = parsed_data.opponent;
+      global.game_played = true;
       init_page_game(parsed_data.outcome);
       console.log("game init");
     }
@@ -91,11 +97,68 @@ function handle_invalid_game(){
   init_error_page();
 }
 
+function closedialog(){
+  shareDialog.classList.remove('is-open');
+  connecting_waiting_room();
+}
+
+closeButton.addEventListener('click', event => {
+  closedialog();
+});
+
+copyButton.addEventListener('click', event => {
+  var copyText = document.getElementById("copied-url");
+  copyText.select();
+  copyText.setSelectionRange(0, 99999);
+  document.execCommand("copy");
+  closedialog();
+  console.log("copied link");
+});
 
 invitationbutton.addEventListener('click', function(e) {
-  connect();
+  //if ($("#copied-url").hasClass("socket-open")){  
+    //it's a re-send button
+    //displayShare();
+  //} else {
+    //if NO .socket-open class on the DOM tree, the sockets haven't returned an address yet
+    //so we assume it hasn't even opened (bug:there is time-gap - it might simply be that it hasn't returned yet) 
+  if ($("#copied-url").attr("value")){
+    displayShare();
+  }
+  else {
+    connect(displayShare);
+  }
   e.preventDefault();
 });
+
+function displayShare(shareablelink){
+    //11  if (shareablelink) {
+    //this means it was returned by connect() with friend_url, oh spaghetti!
+    //1   $("#copied-url").attr("value",shareablelink);
+    //1   $("#copied-url").addClass("socket-open");
+    //1 } else {
+    //else, assume this was the re-send button and there was enough time
+    //to build get the friend_url
+    //in other words assume this is the re-send button calling it
+    /*1  if ($("#copied-url").hasClass("socket-open")){
+    1    setTimeout(function() {
+    1    }, 750);
+    1  }*/
+    $("#copied-url").attr("value", shareablelink);
+
+  if (navigator.share) { 
+    navigator.share({
+       title: 'Πρόσκληση για τσούγκρισμα',
+       url: shareablelink
+    }).then(() => {
+      console.log('Thanks for sharing!');
+      connecting_waiting_room();
+    })
+    .catch(console.error);
+  } else {
+    shareDialog.classList.add('is-open');
+  }
+}
 
 function setnickname_and_progress(e) {
   e.preventDefault();
@@ -119,20 +182,20 @@ function init_waiting_room()
   if (global.is_host) {
     $('#button-invitation').addClass('active');
     $("#page-waiting-room .instructions").html("Στείλε μια πρόσκληση σε ένα αγαπημένο σου πρόσωπο και τσουγκρίστε παρέα!");
-    $('#button-invitation p').html("Αποστολή");
+    $('#button-invitation p').html("Αποστολή <svg><use href=\"#share-icon\"></use></svg>");
   } else{
-    console.log('init waiting room Here is the friend ')
+    console.log('init waiting room here is the friend ')
     $('#button-invitation').removeClass('active');
-    connecting_waiting_room(null);//don't ask to send invite, skip straight to connecting!
+    connecting_waiting_room();//don't ask to send invite, skip straight to connecting!
   }
 }
 
-function connecting_waiting_room(friend_url)
+function connecting_waiting_room()
 {
   if (global.is_host){
     $("#button-invitation p").html("Επαναποστολή");
     $("#page-waiting-room .instructions").html("Αναμονή σύνδεσης, <br> μην κλείσεις αυτό το παράθυρο</p>");
-    $("#page-waiting-room .notes").html("<p> Μπορείς να ξαναστείλεις την πρόσκληση αντιγράφοντας χειροκίνητα τον σύνδεσμο </p><p class=\"light-text\">"+friend_url["invitation_url"]+"</p><p>ή πατώντας παρακάτω</p>");
+    $("#page-waiting-room .notes").html("<p> Μπορείς να ξαναστείλεις την πρόσκληση</p>");
   }else{
     console.log('Connect waiting room Here is the friend ')
     connect();
@@ -233,11 +296,11 @@ function init_results_page() {
     $(".results-card:first img.egg-cracked-tip").remove();
     $(".results-card:first img.egg-cracked-butt").remove();
     $(".results-card:first img.egg-cracked-both").remove();
-  } else if (global.last_eggroll.front) {
+  } else if (global.last_eggroll.back) {
     $(".results-card:first img.egg-champion").remove();
     $(".results-card:first img.egg-cracked-butt").remove();
     $(".results-card:first img.egg-cracked-both").remove();
-  } else if (global.last_eggroll.back){
+  } else if (global.last_eggroll.front){
     $(".results-card:first img.egg-champion").remove();
     $(".results-card:first img.egg-cracked-tip").remove();
     $(".results-card:first img.egg-cracked-both").remove();

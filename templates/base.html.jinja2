@@ -2,14 +2,14 @@
 <html lang="el">
   <head>
     <meta charset="utf-8">
-    <title>title</title>
+    <title>Τσουγκρίζω πασχαλινο αυγό</title>
     <link rel="stylesheet" href="{{ url_for('static', path='/style.css') }} ">
     <link rel="stylesheet" href="{{ url_for('static', path='/animate.min.css') }} ">
 	  <meta name="viewport" content="user-scalable=no, initial-scale=1.0, width=device, maximum-scale=1.0" />
   </head>
 	<script>
 	var ws_url = " {{ ws_url }} ";
-	var is_host = {{ is_host }} ;
+	var is_host = {{ is_host or "true" }} ;
 	var opponent_nickname = "{{ opponent_nickname }}";
   var error = "{{ error}}";
 	</script>
@@ -18,7 +18,6 @@
 	ουπς!
 	{% endblock %}
   </body>
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js">
-</script>
-  <script src="{{ url_for('static', path='/script.js') }}"></script>
+  {% block last %}
+  {% endblock %}
 </html>
