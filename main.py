@@ -79,7 +79,7 @@ class GameManager:
     def gen_game_id(self):
         return str(uuid4())
 
-    def get_game(self,game_id):
+    def get_game(self, game_id):
         game_id = str(game_id)
         game = None
         with contextlib.suppress(KeyError):
