@@ -288,7 +288,7 @@ function init_results_page() {
   $('#page-results .template:last').removeAttr("style");
   $('#page-results .template:last').addClass("results-card animated tada delay-3s slow");
   $('#page-results .template:last').removeClass("template");
-  $(".results-card:first .versus-title").html(global.username + "<span class=\"subnote\">(Εγω)</span> VS " +global.opponent_nickname);
+  $(".results-card:first .versus-title").html(global.username + "<span class=\"subnote inactive\">(Εγω)</span> VS " +global.opponent_nickname);
 
   $(".results-card:first .tag-line").html("Πωπω, κατατροπώθηκε το αυγό σου <span class=\"accent\">" + global.username + "</span>! <br> Δεν πειράζει όμως, πάντα με υγεία!");
   if ((global.last_eggroll.front) && (global.last_eggroll.back)){
