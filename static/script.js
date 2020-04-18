@@ -148,8 +148,9 @@ function displayShare(shareablelink){
 
   if (navigator.share) { 
     navigator.share({
-       title: 'Πρόσκληση για τσούγκρισμα',
-       url: shareablelink
+      title: 'Πρόσκληση για Τσούγκρισμα',
+      text: 'Ο/η ' + global.username + ' σε προσκάλεσε να τσουγκρίσετε αυγά! Πάτησε στον παρακάτω σύνδεσμο για να ανταποκριθείς: ' + shareablelink,
+      url: shareablelink
     }).then(() => {
       console.log('Thanks for sharing!');
       connecting_waiting_room();
@@ -193,14 +194,14 @@ function init_waiting_room()
 function connecting_waiting_room()
 {
   if (global.is_host){
-    $("#button-invitation p").html("Επαναποστολή");
-    $("#page-waiting-room .instructions").html("Αναμονή σύνδεσης, <br> μην κλείσεις αυτό το παράθυρο</p>");
-    $("#page-waiting-room .notes").html("<p> Μπορείς να ξαναστείλεις την πρόσκληση</p>");
+    $("#button-invitation p").html("Επαναποστολή <svg><use href=\"#share-icon\"></use></svg>");
+    $("#page-waiting-room .instructions").html("Αναμονή σύνδεσης, κράτησε αυτό το παράθυρο ανοιχτό. </p>");
+    $("#page-waiting-room .notes").html("<p> Μπορείς να ξαναστείλεις την πρόσκληση πατώντας το παρακάτω πλήκτρο. Κάθε πρόσκληση μπορείς να την στείλεις σε ένα μόναχα άτομο</p>");
   }else{
-    console.log('Connect waiting room Here is the friend ')
+    console.log('friends has arrived ')
     connect();
     $("#button-invitation p").html("Πρόσκληση");
-    $("#page-waiting-room .instructions").html("Γίνεται σύνδεση στο παιχνίδι του <b>"+ global.opponent_nickname + "</b>");
+    $("#page-waiting-room .instructions").html("Γίνεται σύνδεση με τον <b>"+ global.opponent_nickname + "</b>");
   }
   $('#loading-icon').addClass('animated fadeIn faster');
   $('#loading-icon').addClass('active');
@@ -290,7 +291,7 @@ function init_results_page() {
   $('#page-results .template:last').removeClass("template");
   $(".results-card:first .versus-title").html(global.username + " VS " +global.opponent_nickname);
 
-  $(".results-card:first .tag-line").html("Το αυγό έσπασε, αλλά δεν πειράζει καθόλου! <br> Και του χρόνου με υγεία!");
+  $(".results-card:first .tag-line").html("Το αυγό σου έσπασε, αλλά δεν πειράζει καθόλου! <br> Και του χρόνου με υγεία!");
   if ((global.last_eggroll.front) && (global.last_eggroll.back)){
     $(".results-card:first .tag-line").html("Το αυγό σου αποδείχθηκε πρωταθλητής! Πάντα Καλότυχος!");
     $(".results-card:first img.egg-cracked-tip").remove();

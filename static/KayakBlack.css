@@ -1,0 +1,9 @@
+@font-face {
+  font-family: 'Kayak';
+  src: url('KayakBlack.eot');
+  src: url('KayakBlack.eot?#iefix') format('embedded-opentype'),
+       url('KayakBlack.woff') format('woff'),
+       url('KayakBlack.ttf') format('truetype');       
+  font-style: normal;
+  font-weight: 900;
+}
