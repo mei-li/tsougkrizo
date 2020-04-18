@@ -116,14 +116,16 @@ copyButton.addEventListener('click', event => {
 });
 
 invitationbutton.addEventListener('click', function(e) {
-  //if ($("#copied-url").hasClass("socket-open")){  
+  //if ($("#copied-url").hasClass("socket-open")){
     //it's a re-send button
     //displayShare();
   //} else {
     //if NO .socket-open class on the DOM tree, the sockets haven't returned an address yet
-    //so we assume it hasn't even opened (bug:there is time-gap - it might simply be that it hasn't returned yet) 
-  if ($("#copied-url").attr("value")){
-    displayShare();
+    //so we assume it hasn't even opened (bug:there is time-gap - it might simply be that it hasn't returned yet)
+  shareablelink = $("#copied-url").attr("value")
+  if (shareablelink){
+    console.log('Resend: ' + shareablelink)
+    displayShare(shareablelink);
   }
   else {
     connect(displayShare);
@@ -135,7 +137,7 @@ function displayShare(shareablelink){
 
   $("#copied-url").attr("value", shareablelink);
 
-  if (navigator.share) { 
+  if (navigator.share) {
     navigator.share({
       title: 'Πρόσκληση για Τσούγκρισμα',
       text: 'Ο/η ' + global.username + ' σε προσκάλεσε να τσουγκρίσετε αυγά! Πάτησε στον παρακάτω σύνδεσμο για να ανταποκριθείς: ' + shareablelink,
