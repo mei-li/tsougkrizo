@@ -95,10 +95,12 @@ class GameManager:
         del self._games[game_id]
 
     def save_results(self, game_id, results):
+        game_id = str(game_id)
         self._results[game_id] = results
 
     def get_results(self, game_id):
-        return self._results[game_id]
+        game_id = str(game_id)
+        return self._results.get(game_id)
 
 
 game_manager = GameManager()
