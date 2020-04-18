@@ -2,6 +2,7 @@ import os
 import json
 import contextlib
 import uvicorn
+from cachetools import TTLCache
 from contextlib import suppress
 from random import choices
 from uuid import UUID, uuid4
@@ -29,6 +30,7 @@ class ErrorCode:
 
 class GameError(Exception):
     pass
+
 
 @app.exception_handler(StarletteHTTPException)
 async def http_exception_handler(request, exc):
@@ -72,6 +74,7 @@ async def catch_all_exception_handler(request, exc):
 
 class GameManager:
     _games = {}
+    _results = TTLCache(10_000, 24 * 60 * 60)
 
     def gen_game_id(self):
         return str(uuid4())
@@ -90,6 +93,13 @@ class GameManager:
     def remove_game(self, game_id):
         game_id = str(game_id)
         del self._games[game_id]
+
+    def save_results(self, game_id, results):
+        self._results[game_id] = results
+
+    def get_results(self, game_id):
+        return self._results[game_id]
+
 
 game_manager = GameManager()
 
@@ -165,9 +175,13 @@ async def websocket_join(websocket: WebSocket, game_id: UUID):
 async def inform_host(game, game_id, opponent):
     websocket = game['websocket']
     with contextlib.suppress(RuntimeError):
-        await websocket.send_json({
+        results = {
             'outcome': game['outcome'],
-            'opponent': opponent})
+            'opponent': opponent,
+        }
+        await websocket.send_json(results)
+
+    game_manager.save_results(game_id, results)
     print(f"Removing game id: {game_id}", flush=True)
     game_manager.remove_game(game_id)
 
