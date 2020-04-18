@@ -144,7 +144,8 @@ async def join(request: Request, game_id: UUID):
 async def websocket_host(websocket: WebSocket, game_id: UUID):
     await websocket.accept()
     game = game_manager.get_game(game_id)
-    if not game:
+    results = game_manager.get_results(game_id)
+    if not game and not results:
         game = {
             'websocket': websocket,
             'username': None,
@@ -157,6 +158,10 @@ async def websocket_host(websocket: WebSocket, game_id: UUID):
         await websocket.send_json({
             'invitation_url': websocket.url_for('join', game_id=game_id)
         })
+    elif results:
+        await websocket.send_json(results)
+        return
+
     # To keep socket alive until player2 joins
     with contextlib.suppress(WebSocketDisconnect):
         data = await websocket.receive_json()
