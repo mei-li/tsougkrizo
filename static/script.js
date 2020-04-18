@@ -99,6 +99,7 @@ function handle_invalid_game(){
 
 function closedialog(){
   shareDialog.classList.remove('is-open');
+  $("#button-invitation p").addClass("animated pulse infinite slow delay-1s");
   connecting_waiting_room();
 }
 
@@ -122,9 +123,14 @@ invitationbutton.addEventListener('click', function(e) {
   //} else {
     //if NO .socket-open class on the DOM tree, the sockets haven't returned an address yet
     //so we assume it hasn't even opened (bug:there is time-gap - it might simply be that it hasn't returned yet)
-  shareablelink = $("#copied-url").attr("value")
+  shareablelink = $("#copied-url").attr("value");
+  $("#button-invitation").addClass("pressed");
+  setTimeout(function(){
+    $("#button-invitation").removeClass("pressed");
+  }, 200);
+  $("#button-invitation p").addClass("animated pulse infinite slow delay-1s");
   if (shareablelink){
-    console.log('Resend: ' + shareablelink)
+    console.log('Resend: ' + shareablelink);
     displayShare(shareablelink);
   }
   else {
@@ -144,6 +150,7 @@ function displayShare(shareablelink){
       url: shareablelink
     }).then(() => {
       console.log('Thanks for sharing!');
+      $("#button-invitation p").addClass("animated pulse infinite slow delay-1s");
       connecting_waiting_room();
     })
     .catch(console.error);
@@ -281,11 +288,11 @@ function init_results_page() {
   $('#page-results .template:last').removeAttr("style");
   $('#page-results .template:last').addClass("results-card animated tada delay-3s slow");
   $('#page-results .template:last').removeClass("template");
-  $(".results-card:first .versus-title").html(global.username + " VS " +global.opponent_nickname);
+  $(".results-card:first .versus-title").html(global.username + "<span class=\"subnote\">(Εγω)</span> VS " +global.opponent_nickname);
 
-  $(".results-card:first .tag-line").html("Το αυγό σου έσπασε, αλλά δεν πειράζει καθόλου! <br> Και του χρόνου με υγεία!");
+  $(".results-card:first .tag-line").html("Τι τύχη, και τα δυο αυγά έσπασαν! <br> Και του χρόνου με υγεία!");
   if ((global.last_eggroll.front) && (global.last_eggroll.back)){
-    $(".results-card:first .tag-line").html("Το αυγό σου αποδείχθηκε πρωταθλητής! Πάντα Καλότυχος!");
+    $(".results-card:first .tag-line").html("Το αυγό σου <span class=\"accent\">" + global.username + "</span> αποδείχθηκε πρωταθλητής! Πάντα Καλότυχος!");
     $(".results-card:first img.egg-cracked-tip").remove();
     $(".results-card:first img.egg-cracked-butt").remove();
     $(".results-card:first img.egg-cracked-both").remove();
@@ -293,10 +300,12 @@ function init_results_page() {
     $(".results-card:first img.egg-champion").remove();
     $(".results-card:first img.egg-cracked-butt").remove();
     $(".results-card:first img.egg-cracked-both").remove();
+    $(".results-card:first .tag-line").html("Το αυγό σου <span class=\"accent\">" + global.username + "</span> έσπασε, αλλά έσπασε και το δικό μου! <br> Με υγεία και του χρόνου!");
   } else if (global.last_eggroll.front){
     $(".results-card:first img.egg-champion").remove();
     $(".results-card:first img.egg-cracked-tip").remove();
     $(".results-card:first img.egg-cracked-both").remove();
+    $(".results-card:first .tag-line").html("Το αυγό σου <span class=\"accent\">" + global.username + "</span> έσπασε, αλλά έσπασε και το δικό μου! <br> Με υγεία και του χρόνου!");
   } else {
     $(".results-card:first img.egg-champion").remove();
     $(".results-card:first img.egg-cracked-tip").remove();

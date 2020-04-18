@@ -124,6 +124,15 @@ body {
 	
 }
 
+.subnote {
+	font-size: 0.8em;
+	color: #ff7b73;
+}
+
+.accent {
+	color: #000;
+}
+
 .results-card{
 	text-align:center;
 }
@@ -349,6 +358,10 @@ p.instructions, .c-fake-button p {
 .c-fake-button p::before {
   font-size: 1.75em;
   content: attr(data-title);
+}
+
+#button-invitation.pressed {
+    box-shadow: unset;
 }
 
 .c-form {
