@@ -27,6 +27,8 @@ var buttonshareresults = document.getElementById("button-share-results");
 const shareDialog = document.querySelector('.share-dialog');
 const closeButton = document.querySelector('.close-button');
 const copyButton = document.querySelector('.copy-link');
+var shareDialogEventListener;
+var shareDialogCopyEventListener;
 
 $( document ).ready(function() {
   if (global.result === null) {
@@ -193,18 +195,34 @@ function closedialog(callback){
 }
 
 function registerShare(callback){
-  closeButton.addEventListener('click', event => {
+  
+  shareDialogCloseEventListener = function (){
     closedialog(callback);
-  });
+  }
+  closeButton.addEventListener('click', shareDialogCloseEventListener);
+  
+  /*closeButton.addEventListener('click', event => {
+    closedialog(callback);
+  });*/
 
-  copyButton.addEventListener('click', event => {
+  shareDialogCopyEventListener = function (){
     var copyText = document.getElementById("copied-url");
     copyText.select();
     copyText.setSelectionRange(0, 99999);
     document.execCommand("copy");
     closedialog(callback);
     console.log("copied link");
-  });
+  }
+  copyButton.addEventListener('click', shareDialogCopyEventListener);
+
+  /*copyButton.addEventListener('click', event => {
+    var copyText = document.getElementById("copied-url");
+    copyText.select();
+    copyText.setSelectionRange(0, 99999);
+    document.execCommand("copy");
+    closedialog(callback);
+    console.log("copied link");
+  });*/
 }
 
 function registerInvitation(){
@@ -322,6 +340,11 @@ function timeline_finished(hypeDocument, element, event) {
   if (event.type === "HypeTimelineComplete"){
     if (event.timelineName === "Bump Timeline Butt"){
       console.log("finished animation sequence");
+      if (global.persistent_url == null) {
+        global.persistent_url = window.location.href;
+      }
+      closeButton.removeEventListener('click', shareDialogCloseEventListener);
+      copyButton.removeEventListener('click', shareDialogCopyEventListener);
       registerShare();
       registerResultInteractivity();
       showResult();
