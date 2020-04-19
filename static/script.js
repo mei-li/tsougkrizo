@@ -12,6 +12,7 @@ var global = {
   error: error,
   game_played: false,
   timeout: 1000,  // milliseconds to retry failed socket connection for host
+  persistent_url: null,
 };
 
 Sentry.init({ dsn: 'https://195894b38c894c25ba5c4111599fb9d7@o378832.ingest.sentry.io/5202856' });
@@ -41,6 +42,7 @@ $( document ).ready(function() {
     global.last_eggroll = global.result.outcome;
     global.opponent_nickname = global.result.host;
     global.username = global.result.opponent;
+    global.persistent_url = window.location.href;
     registerResultInteractivity();
     registerShare();
     showResult();
@@ -72,7 +74,7 @@ function shareResult()
   shareLink(
     global.username + 'ή' + global.opponent_nickname +";",
     teasertext,
-    window.location.href, //<-- I use this both for the host, guest, visitor i'd rather have the actual game room URL since it doesn't work for the host
+    global.persistent_url, 
     function(){gaEvent("share_result");}
   );
 }
@@ -130,6 +132,7 @@ function connect(onurl) {
     console.log(parsed_data['invitation_url']);
     //dummy test for whether there is a URL in the response. Will need changes if websocket ever returns anything else
     if ("invitation_url" in parsed_data){
+      global.persistent_url = parsed_data["invitation_url"]; //I wasn't sure this is the best place to put it, but I can't think of a better place.
       onurl(parsed_data["invitation_url"]);
     } else if ("outcome" in parsed_data)
     {

@@ -71,8 +71,9 @@ body {
 }
 
 #tsougkrizo-watermark {
-	grid-area: hea;
-	width: 50%;
+    grid-area: hea;
+    width: 50%;
+	max-width: 15em;
 }
 
 .light-text {
