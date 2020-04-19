@@ -58,11 +58,17 @@ function connect(onurl) {
   }
   ws.onclose = function(e) {
     if (global.is_host && !global.game_played){ // TODO should change for multiplayer
-      console.log('Socket is closed. Reconnect will be attempted in 1 second.', e.reason);
-      setTimeout(function() {
-        connect(onurl);
-      }, global.timeout);
-      global.timeout = global.timeout*2;
+      console.log('Socket is closed. Reconnect will be attempted in ' + global.timeout + ' second.', e.reason);
+      if (typeof onurl !== 'undefined' && global.timeout < 1000 * 60 * 20) { // timeout is 20 mins
+        setTimeout(function() {
+          connect(onurl);
+        }, global.timeout);
+        global.timeout = global.timeout*2;
+      }
+      else {
+        console.log('Closing socket, callback undefined or timeout '+ global.timeout +' too long')
+      }
+
     }
   };
 
