@@ -22,6 +22,7 @@ var invitationbutton = document.getElementById("button-invitation");
 var nicknamefield = document.getElementById('nickname');
 var buttonnewinvitation = document.getElementById("button-new-invitation");
 var buttonreset = document.getElementById("button-reset");
+var buttonshareresults = document.getElementById("button-share-results");
 const shareDialog = document.querySelector('.share-dialog');
 const closeButton = document.querySelector('.close-button');
 const copyButton = document.querySelector('.copy-link');
@@ -29,7 +30,7 @@ const copyButton = document.querySelector('.copy-link');
 $( document ).ready(function() {
   if (global.result === null) {
     registerBaseGame();
-    registerShare();
+    registerShare(connecting_waiting_room);
     registerInvitation();
     if (global.error != ''){
       handle_invalid_game();
@@ -37,14 +38,44 @@ $( document ).ready(function() {
   }
   else {
     console.log("THERE IS result:" + global.result);
-    global.last_eggroll = global.result;
+    global.last_eggroll = global.result.outcome;
     global.opponent_nickname = global.result.host;
     global.username = global.result.opponent;
-    showResults();
-
+    registerResultInteractivity();
+    registerShare();
+    showResult();
   }
 
 });
+
+function registerResultInteractivity(){
+  buttonnewinvitation.addEventListener('click', function (e) {
+    window.location = "/";
+    gaEvent("play_again");
+  });
+  buttonshareresults.addEventListener('click', function (e) {
+    shareResult();
+  });
+
+}
+
+function shareResult()
+{
+  var teasertext;
+  if (global.last_eggroll.front != global.last_eggroll.back){
+    //both have cracked eggs
+    teasertext = "Μπορεί όλα τα αυγά να σπάσανε αλλά εμείς το διασκεδάσαμε!";
+  } else {
+    //one is winner and one is loser!
+    teasertext = "Στο τσούγκρισμα υπήρξε αξεπέραστος πρωταθλητής! Ποιος να ναι αυτός; Αυτό, ΕΣΥ θα πρέπει να το βρείς!";
+  }
+  shareLink(
+    global.username + 'ή' + global.opponent_nickname +";",
+    teasertext,
+    window.location.href,
+    function(){gaEvent("share_result");}
+  );
+}
 
 function registerBaseGame(){
   nicknamefield.addEventListener('keydown', function (e) {if (e.key === "Enter" && nicknamefield.checkValidity()) {
@@ -144,15 +175,17 @@ function handle_invalid_game(){
   init_error_page();
 }
 
-function closedialog(){
+function closedialog(callback){
   shareDialog.classList.remove('is-open');
   $("#button-invitation p").addClass("animated pulse infinite slow delay-1s");
-  connecting_waiting_room();
+  if (typeof callback !== 'undefined') {
+    callback();
+  }
 }
 
-function registerShare(){
+function registerShare(callback){
   closeButton.addEventListener('click', event => {
-    closedialog();
+    closedialog(callback);
   });
 
   copyButton.addEventListener('click', event => {
@@ -160,7 +193,7 @@ function registerShare(){
     copyText.select();
     copyText.setSelectionRange(0, 99999);
     document.execCommand("copy");
-    closedialog();
+    closedialog(callback);
     console.log("copied link");
   });
 }
@@ -280,7 +313,7 @@ function timeline_finished(hypeDocument, element, event) {
   if (event.type === "HypeTimelineComplete"){
     if (event.timelineName === "Bump Timeline Butt"){
       console.log("finished animation sequence");
-      showResults();
+      showResult();
       return false;
     }
   }
@@ -347,7 +380,7 @@ function send_new_invite(e) {
   }, 800);*/
 }
 
-function showResults() {
+function showResult() {
   $("#cards-container").scrollTop(0);
 
   $('#page-results .template').clone().insertAfter('#page-results .template');

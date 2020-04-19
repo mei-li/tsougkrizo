@@ -15,15 +15,17 @@
     gtag('config', 'UA-37653732-2');
   </script>
 
-    <meta charset="utf-8">
-    <title>Τσουγκρίζω πασχαλινο αυγό</title>
+    
     <link rel="stylesheet" href="{{ url_for('static', path='/style.css') }} ">
     <link rel="stylesheet" href="{{ url_for('static', path='/animate.min.css') }} ">
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', path='/KayakBlack.css') }} "/>
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', path='/KayakLight.css') }} "/>
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', path='/BPKinder.css') }} "/>
 	  <meta name="viewport" content="user-scalable=no, initial-scale=1.0, width=device-width, maximum-scale=1.0" />
-
+    
+    {% block switchmeta %}
+    <meta charset="utf-8">
+    <title>Τσουγκρίζω πασχαλινο αυγό</title>
     <meta name="description" content="Τσούγκρισμα αυγών">
     <!-- OG Meta Tags to improve the way the post looks when you share the page on LinkedIn, Facebook, Google+ -->
     <meta property="og:site_name" content="Τσούγκρισμα"> <!-- website name -->
@@ -33,6 +35,7 @@
     <meta property="og:image" content="{{ url_for('static', path='/ogimage.jpg') }}">
     <meta property="og:url" content="{{ url_for('host') }}"> <!-- where do you want your post to link to -->
     <meta property="og:type" content="article">
+    {% endblock %}
     <!-- Favicon  -->
     <link rel="icon" href="{{ url_for('static', path='/favicon.png') }}">
 
