@@ -72,7 +72,7 @@ function shareResult()
     teasertext = "Στο τσούγκρισμα υπήρξε αξεπέραστος πρωταθλητής! Ποιος να ναι αυτός; Αυτό, ΕΣΥ θα πρέπει να το βρείς!";
   }
   shareLink(
-    global.username + 'ή' + global.opponent_nickname +";",
+    global.username + ' VS ' + global.opponent_nickname +";",
     teasertext,
     global.persistent_url, 
     function(){gaEvent("share_result");}
