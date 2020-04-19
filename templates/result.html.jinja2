@@ -1,49 +1,25 @@
 {% extends "base.html.jinja2" %}
 
-{% block content %}
-<!-- page content -->
-    <div id="page-nickname" class="container active">
-		<div class="logo">
-			<img id="tsougkrisma-logo" width="100%" src="{{ url_for('static', path='/logo_lowres.svg') }} ">
-		</div>
-    	<div class="content">
-    		<p class="instructions ">Καλωσήρθες! </br> Πως να σε συστήσω;</p>
-    		<div class="c-formContainer">
-				<form class="c-form nameform" autocomplete="off" action="">
-			    	<input autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"id="nickname" class="c-form__input" placeholder="Όνομα" type="text" pattern="[A-Za-zΑ-Ωα-ω0-9άέίϊΐόήώύϋΰΆΈΊΪΌΉΏΎΫς\s]{1,30}$" required>
-					<label class="c-form__buttonLabel">
-	      				<button id="setname" class="c-form__button" type="button">ΟΚ</button>
-					</label>
-				</form>
-			</div>
-    	</div>
-		<div class="titroo-banner">
-			<a href="https://www.titroo.com/" target="_blank "><img src="{{ url_for('static', path='/banner01.jpg') }} "></a>
-		</div>
-    </div>
-    <div id="page-waiting-room" class="container">
-    	<div class="content">
-    		<p class="instructions"></p>
-			<img id="loading-icon" width="64px" src="{{ url_for('static', path='/loader.gif') }} ">
-			<p class="notes"></p>
-			<div id="button-invitation" class="c-fake-button">
-				<p></p>
-			</div>
-    	</div>
-    </div>
-    <div id="page-game" class="container">
-    	<div class="content">
-			<div id="mycanvas">
-				<div id="eggsanimated01_hype_container" class="HYPE_document" style="margin:auto;position:relative;width:100%;height:100%;overflow:hidden;">
-					<script type="text/javascript" charset="utf-8" src=" {{ url_for('static', path='/eggs_animated01.hyperesources/eggsanimated01_hype_generated_script.js?47843') }} "></script>
-				</div>
-			</div>
+{% block switchmmeta %}
+    <meta charset="utf-8">
+    <title>Τσουγκρίζω Πασχαλινό Αυγό - Αποτελέσματα</title>
+    <meta name="description" content="Τα αποτελέσματα του τσουγκρίσματος μου">
+    <!-- OG Meta Tags to improve the way the post looks when you share the page on LinkedIn, Facebook, Google+ -->
+    <meta property="og:site_name" content="Τσούγκρισμα"> <!-- website name -->
+    <meta property="og:site" content="{{ url_for('host') }}"> <!-- website link -->
+    <meta property="og:title" content="Αποτελέσματα Τσουγκρίσματος"> <!-- title shown in the actual shared post -->
+    <meta property="og:description" content="Μάθε ποιό αυγό έσπασε και ποιό επικράτησε στο τσούγκρισμα!"> <!-- description shown in the actual shared post -->
+    <meta property="og:image" content="{{ url_for('static', path='/ogimage.jpg') }}">
+    <meta property="og:url" content="{{ url_for('host') }}"> <!-- where do you want your post to link to -->
+    <meta property="og:type" content="article">
+{% endblock %}
 
-    	</div>
-    </div>
-	<div id="page-results" class="container">
-    	<div class="content">
-    		<p class="instructions chr-ane">Χριστός Ανέστη!</p>
+{% block content %}
+	<div id="page-results" class="container clean-grid">
+    	<div id="tsougkrizo-watermark" class="logo">
+			<img id="tsougkrisma-logo" width="100%" src="{{ url_for('static', path='/logo_watermark.svg') }} ">
+		</div>
+		<div class="content">
     		<div id="cards-container">
 				<div style="display:none;" class="template">
 					<p class="versus-title"></p>
@@ -63,14 +39,6 @@
 				</div>
 			</div>
     	</div>
-	</div>
-	<div id="page-error" class="container">
-		<div class="content">
-			<p class="instructions">error page</p>
-			<div id="button-reset" class="c-fake-button">
-				<p>Αρχική Σελίδα</p>
-			</div>
-		</div>
 	</div>
 	<div class="share-container" style="">
 		<div class="share-dialog">
@@ -99,10 +67,9 @@
 			<symbol id="close" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-x-square"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="9" y1="9" x2="15" y2="15"></line><line x1="15" y1="9" x2="9" y2="15"></line></symbol>
 		</defs>
 		</svg>
-	</div>
 {% endblock %}
 {% block last %}
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js">
 </script>
   <script src="{{ url_for('static', path='/script.js') }}"></script>
 {% endblock %}
