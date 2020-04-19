@@ -40,13 +40,16 @@ $( document ).ready(function() {
     }
   }
   else {
+    gaEvent("visit_result"); //you came here by visiting somebody's shared results page
     console.log("THERE IS result:" + global.result);
     global.last_eggroll = global.result.outcome;
     global.opponent_nickname = global.result.host;
     global.username = global.result.opponent;
     global.persistent_url = window.location.href;
     registerResultInteractivity();
-    registerShare();
+    registerShare(function(){
+      gaEvent("share_result","visitor");console.log("ga:share_result(visitor)");
+    });
     showResult();
   }
 
@@ -77,7 +80,7 @@ function shareResult()
     global.username + ' VS ' + global.opponent_nickname +";",
     teasertext,
     global.persistent_url, 
-    function(){gaEvent("share_result");}
+    function(){gaEvent("share_result");console.log("event:share_result");}
   );
 }
 
@@ -345,7 +348,9 @@ function timeline_finished(hypeDocument, element, event) {
       }
       closeButton.removeEventListener('click', shareDialogCloseEventListener);
       copyButton.removeEventListener('click', shareDialogCopyEventListener);
-      registerShare();
+      registerShare(function(){
+        gaEvent("share_result");console.log("ga:share_result(live)");
+      });
       registerResultInteractivity();
       showResult();
       return false;
@@ -475,8 +480,14 @@ function init_error_page(){
   }, 800);
 }
 
-function gaEvent(action) {
+function gaEvent(action,label) {
   if (gtag){
-    gtag('event',action);
+    if (label) {
+      gtag('event',action,{
+        event_label:label
+      });
+    }else{
+      gtag('event',action);
+    }
   }
 }
