@@ -50,8 +50,8 @@ $( document ).ready(function() {
 
 function registerResultInteractivity(){
   buttonnewinvitation.addEventListener('click', function (e) {
-    window.location = "/";
     gaEvent("play_again");
+    window.location = "/";
   });
   buttonshareresults.addEventListener('click', function (e) {
     shareResult();
@@ -72,7 +72,7 @@ function shareResult()
   shareLink(
     global.username + 'ή' + global.opponent_nickname +";",
     teasertext,
-    window.location.href,
+    window.location.href, //<-- I use this both for the host, guest, visitor i'd rather have the actual game room URL since it doesn't work for the host
     function(){gaEvent("share_result");}
   );
 }
@@ -85,11 +85,11 @@ function registerBaseGame(){
   setnamebutton.addEventListener('click', function (e) {
     setnickname_and_progress(e);
   });
-  buttonnewinvitation.addEventListener('click', function (e) {
+  /*buttonnewinvitation.addEventListener('click', function (e) {
     //go back to the waiting room (if you were a guest, now you are host)
     send_new_invite(e);
     gaEvent("play_again");
-  });
+  });*/
   buttonreset.addEventListener('click', function (e) {
     //reset the app button
     window.location = "/";
@@ -313,6 +313,8 @@ function timeline_finished(hypeDocument, element, event) {
   if (event.type === "HypeTimelineComplete"){
     if (event.timelineName === "Bump Timeline Butt"){
       console.log("finished animation sequence");
+      registerShare();
+      registerResultInteractivity();
       showResult();
       return false;
     }
@@ -351,7 +353,9 @@ function init_page_game(eggroll)
   //$('#enemyegg').addClass('animated slideInUp slow delay-1s');
 }
 
-function send_new_invite(e) {
+/* this functions is no longer needed but I've kept it as a memory of what it takes
+to reset the scene
+/*function send_new_invite(e) {
   e.preventDefault();
   global.is_host = true;
   global.opponent_nickname = null;
@@ -378,7 +382,7 @@ function send_new_invite(e) {
       $('#page-results').removeClass('animated fadeOut faster');
       $('#page-waiting-room').removeClass('animated fadeIn slow');
   }, 800);*/
-}
+//}
 
 function showResult() {
   $("#cards-container").scrollTop(0);

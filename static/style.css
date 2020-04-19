@@ -221,6 +221,7 @@ body {
 	flex-direction: row;
 	display: inline-flex;
 	width:100%;
+	justify-content: center;
 }
 
 #button-new-invitation {
