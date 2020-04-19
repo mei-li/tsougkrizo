@@ -194,17 +194,29 @@ function registerInvitation(){
 }
 
 function displayShare(shareablelink){
-
-  $("#copied-url").attr("value", shareablelink);
-  if (navigator.share) {
-    navigator.share({
-      title: 'Πρόσκληση για Τσούγκρισμα',
-      text: 'Ο/η ' + global.username + ' σε προσκάλεσε να τσουγκρίσετε αυγά! Πάτησε τον σύνδεσμο για να ανταποκριθείς. ',
-      url: shareablelink
-    }).then(() => {
-      console.log('Thanks for sharing!');
+  shareLink(
+    'Πρόσκληση για Τσούγκρισμα',
+    'Ο/η ' + global.username + ' σε προσκάλεσε να τσουγκρίσετε αυγά! Πάτησε τον σύνδεσμο για να ανταποκριθείς. ',
+    shareablelink,
+    function () {
       $("#button-invitation p").addClass("animated pulse infinite slow delay-1s");
       connecting_waiting_room();
+    }
+  );
+}
+
+function shareLink(title, text, link, callback){
+  $("#copied-url").attr("value", link);
+  if (navigator.share) {
+    navigator.share({
+      title: title,
+      text: text,
+      url: link
+    }).then(() => {
+      console.log('Thanks for sharing!');
+      if (typeof callback !== 'undefined') {
+        callback();
+      }
     })
     .catch(console.error);
   } else {
