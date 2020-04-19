@@ -98,9 +98,20 @@ class GameManager:
         game_id = str(game_id)
         self._results[game_id] = results
 
-    def get_results(self, game_id):
+    def get_results_for_host(self, game_id):
         game_id = str(game_id)
         return self._results.get(game_id)
+
+    def get_results_for_player(self, game_id):
+        game_id = str(game_id)
+        results = self._results.get(game_id)
+        if results and 'outcome' in results:
+            reverse_outcome = {
+                'back': not results['outcome']['back'],
+                'front': not results['outcome']['front'],
+            }
+            overrides = {'outcome': reverse_outcome}
+            return {**results, **overrides}
 
 
 game_manager = GameManager()
@@ -111,23 +122,13 @@ async def host(request: Request):
     game_id = game_manager.gen_game_id()
     ws_url = request.url_for("websocket_host", game_id=game_id)
     return templates.TemplateResponse("player.html.jinja2", {
-        "request": request, "ws_url": ws_url, "is_host": "true" })
-
-
-@app.get("/{game_id}")
-async def results(request: Request, game_id: UUID):
-    results = game_manager.get_results(game_id)
-    game = game_manager.get_game(game_id)
-
-    websocket = game['websocket']
-    with contextlib.suppress(RuntimeError):
-        await websocket.send_json(results)
+        "request": request, "ws_url": ws_url, "is_host": "true"})
 
 
 @app.get("/{game_id}/join")
 async def join(request: Request, game_id: UUID):
     game = game_manager.get_game(game_id)
-    results = game_manager.get_results(game_id)
+    results = game_manager.get_results_for_player(game_id)
     error = ''
     if not game and not results:
         error = ErrorCode.invalid_game
@@ -135,7 +136,7 @@ async def join(request: Request, game_id: UUID):
     return templates.TemplateResponse(template, {
         "request": request,
         "ws_url": request.url_for("websocket_join", game_id=game_id),
-        "is_host": "false" ,
+        "is_host": "false",
         "opponent_nickname": game['username'] if game else '',
         "error": error,
         "result": json.dumps(results) if results else "",
@@ -146,7 +147,7 @@ async def join(request: Request, game_id: UUID):
 async def websocket_host(websocket: WebSocket, game_id: UUID):
     await websocket.accept()
     game = game_manager.get_game(game_id)
-    results = game_manager.get_results(game_id)
+    results = game_manager.get_results_for_host(game_id)
     if not game and not results:
         game = {
             'websocket': websocket,
