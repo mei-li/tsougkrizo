@@ -79,8 +79,7 @@ function shareResult()
   shareLink(
     global.username + ' VS ' + global.opponent_nickname +";",
     teasertext,
-    global.persistent_url, 
-    function(){gaEvent("share_result");console.log("event:share_result");}
+    global.persistent_url
   );
 }
 
@@ -349,7 +348,10 @@ function timeline_finished(hypeDocument, element, event) {
       closeButton.removeEventListener('click', shareDialogCloseEventListener);
       copyButton.removeEventListener('click', shareDialogCopyEventListener);
       registerShare(function(){
-        gaEvent("share_result");console.log("ga:share_result(live)");
+        var user_type;
+        if (global.is_host) {user_type="host";}
+        else {user_type="guest";}
+        gaEvent("share_result",user_type);console.log("ga:share_result"+user_type);
       });
       registerResultInteractivity();
       showResult();
