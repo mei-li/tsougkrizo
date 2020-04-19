@@ -127,16 +127,18 @@ async def results(request: Request, game_id: UUID):
 @app.get("/{game_id}/join")
 async def join(request: Request, game_id: UUID):
     game = game_manager.get_game(game_id)
+    results = game_manager.get_results(game_id)
     error = ''
-    if not game:
+    if not game and not results:
         error = ErrorCode.invalid_game
-
-    return templates.TemplateResponse("player.html.jinja2", {
+    template = "player.html.jinja2" if not results else "result.html.jinja2"
+    return templates.TemplateResponse(template, {
         "request": request,
         "ws_url": request.url_for("websocket_join", game_id=game_id),
         "is_host": "false" ,
         "opponent_nickname": game['username'] if game else '',
-        "error": error
+        "error": error,
+        "result": json.dumps(results) if results else "",
         })
 
 
@@ -186,15 +188,16 @@ async def websocket_join(websocket: WebSocket, game_id: UUID):
     result2 = {'back': not back, 'front': not front}
 
     await websocket.send_json({'outcome': result2, 'opponent': game['username']})
-    await inform_host(game, game_id, username)
+    await inform_host(game, game_id, username, game['username'])
 
 
-async def inform_host(game, game_id, opponent):
+async def inform_host(game, game_id, opponent, host):
     websocket = game['websocket']
     with contextlib.suppress(RuntimeError):
         results = {
             'outcome': game['outcome'],
             'opponent': opponent,
+            'host': host
         }
         await websocket.send_json(results)
 

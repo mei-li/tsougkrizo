@@ -42,6 +42,11 @@
 	var is_host = {{ is_host or "true" }} ;
 	var opponent_nickname = "{{ opponent_nickname }}";
   var error = "{{ error}}";
+  var result = {%- if result %}
+                {{ result | safe }}
+            {% else %}
+                null
+            {%- endif %};
 	</script>
   <body>
 	{% block content %}

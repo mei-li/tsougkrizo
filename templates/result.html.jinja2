@@ -1,0 +1,32 @@
+{% extends "base.html.jinja2" %}
+
+{% block content %}
+	<div id="page-results" class="container">
+    	<div class="content">
+    		<p class="instructions chr-ane">Χριστός Ανέστη!</p>
+    		<div id="cards-container">
+				<div style="display:none;" class="template">
+					<p class="versus-title"></p>
+					<p class="tag-line"></p>
+					<img class="egg-result egg-champion" width="280px" src="{{ url_for('static', path='/egg_champion_s.png') }} ">
+					<img class="egg-result egg-cracked-tip" width="280px" src="{{ url_for('static', path='/egg_cracked_tip_s.png') }} ">
+					<img class="egg-result egg-cracked-butt" width="280px" src="{{ url_for('static', path='/egg_cracked_butt_s.png') }} ">
+					<img class="egg-result egg-cracked-both" width="280px" src="{{ url_for('static', path='/egg_cracked_both_s.png') }} ">
+				</div>
+			</div>
+			<div class="horizontal-buttons">
+				<div id="button-new-invitation" class="c-fake-button">
+					<p>Νεα Αναμέτρηση</p>
+				</div>
+				<!--<div id="button-share-app" class="c-fake-button">
+					<p><svg><use href="#share-icon"></use></svg></p>
+				</div>-->
+			</div>
+    	</div>
+	</div>
+{% endblock %}
+{% block last %}
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js">
+</script>
+  <script src="{{ url_for('static', path='/script.js') }}"></script>
+{% endblock %}

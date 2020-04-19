@@ -8,12 +8,14 @@ var global = {
     back: null,
     front: null
   },
+  result: result,
   error: error,
   game_played: false,
   timeout: 1000,  // milliseconds to retry failed socket connection for host
 };
 
 Sentry.init({ dsn: 'https://195894b38c894c25ba5c4111599fb9d7@o378832.ingest.sentry.io/5202856' });
+
 
 var setnamebutton = document.getElementById("setname");
 var invitationbutton = document.getElementById("button-invitation");
@@ -24,29 +26,45 @@ const shareDialog = document.querySelector('.share-dialog');
 const closeButton = document.querySelector('.close-button');
 const copyButton = document.querySelector('.copy-link');
 
+$( document ).ready(function() {
+  if (global.result === null) {
+    registerBaseGame();
+    registerShare();
+    registerInvitation();
+    if (global.error != ''){
+      handle_invalid_game();
+    }
+  }
+  else {
+    console.log("THERE IS result:" + global.result);
+    global.last_eggroll = global.result;
+    global.opponent_nickname = global.result.host;
+    global.username = global.result.opponent;
+    showResults();
 
-nicknamefield.addEventListener('keydown', function (e) {if (e.key === "Enter" && nicknamefield.checkValidity()) {
-  console.log(nicknamefield.checkValidity());
-  setnickname_and_progress(e);}
-});
-setnamebutton.addEventListener('click', function (e) {
-  setnickname_and_progress(e);
-});
-buttonnewinvitation.addEventListener('click', function (e) {
-  //go back to the waiting room (if you were a guest, now you are host)
-  send_new_invite(e);
-  gaEvent("play_again");
-});
-
-buttonreset.addEventListener('click', function (e) {
-  //reset the app button
-  window.location = "/";
+  }
 
 });
 
-if (global.error != ''){
-  handle_invalid_game();
+function registerBaseGame(){
+  nicknamefield.addEventListener('keydown', function (e) {if (e.key === "Enter" && nicknamefield.checkValidity()) {
+    console.log(nicknamefield.checkValidity());
+    setnickname_and_progress(e);}
+  });
+  setnamebutton.addEventListener('click', function (e) {
+    setnickname_and_progress(e);
+  });
+  buttonnewinvitation.addEventListener('click', function (e) {
+    //go back to the waiting room (if you were a guest, now you are host)
+    send_new_invite(e);
+    gaEvent("play_again");
+  });
+  buttonreset.addEventListener('click', function (e) {
+    //reset the app button
+    window.location = "/";
+});
 }
+
 
 function connect(onurl) {
   //here
@@ -132,43 +150,48 @@ function closedialog(){
   connecting_waiting_room();
 }
 
-closeButton.addEventListener('click', event => {
-  closedialog();
-});
+function registerShare(){
+  closeButton.addEventListener('click', event => {
+    closedialog();
+  });
 
-copyButton.addEventListener('click', event => {
-  var copyText = document.getElementById("copied-url");
-  copyText.select();
-  copyText.setSelectionRange(0, 99999);
-  document.execCommand("copy");
-  closedialog();
-  console.log("copied link");
-});
+  copyButton.addEventListener('click', event => {
+    var copyText = document.getElementById("copied-url");
+    copyText.select();
+    copyText.setSelectionRange(0, 99999);
+    document.execCommand("copy");
+    closedialog();
+    console.log("copied link");
+  });
+}
 
-invitationbutton.addEventListener('click', function(e) {
-  //if ($("#copied-url").hasClass("socket-open")){
-    //it's a re-send button
-    //displayShare();
-  //} else {
-    //if NO .socket-open class on the DOM tree, the sockets haven't returned an address yet
-    //so we assume it hasn't even opened (bug:there is time-gap - it might simply be that it hasn't returned yet)
-  shareablelink = $("#copied-url").attr("value");
-  $("#button-invitation").addClass("pressed");
-  setTimeout(function(){
-    $("#button-invitation").removeClass("pressed");
-  }, 200);
-  $("#button-invitation p").addClass("animated pulse infinite slow delay-1s");
-  if (shareablelink){
-    console.log('Resend: ' + shareablelink);
-    gaEvent("reshare_game");
-    displayShare(shareablelink);
-  }
-  else {
-    gaEvent("share_game");
-    connect(displayShare);
-  }
-  e.preventDefault();
-});
+function registerInvitation(){
+
+  invitationbutton.addEventListener('click', function(e) {
+    //if ($("#copied-url").hasClass("socket-open")){
+      //it's a re-send button
+      //displayShare();
+    //} else {
+      //if NO .socket-open class on the DOM tree, the sockets haven't returned an address yet
+      //so we assume it hasn't even opened (bug:there is time-gap - it might simply be that it hasn't returned yet)
+    shareablelink = $("#copied-url").attr("value");
+    $("#button-invitation").addClass("pressed");
+    setTimeout(function(){
+      $("#button-invitation").removeClass("pressed");
+    }, 200);
+    $("#button-invitation p").addClass("animated pulse infinite slow delay-1s");
+    if (shareablelink){
+      console.log('Resend: ' + shareablelink);
+      gaEvent("reshare_game");
+      displayShare(shareablelink);
+    }
+    else {
+      gaEvent("share_game");
+      connect(displayShare);
+    }
+    e.preventDefault();
+  });
+}
 
 function displayShare(shareablelink){
 
@@ -245,7 +268,7 @@ function timeline_finished(hypeDocument, element, event) {
   if (event.type === "HypeTimelineComplete"){
     if (event.timelineName === "Bump Timeline Butt"){
       console.log("finished animation sequence");
-      init_results_page();
+      showResults();
       return false;
     }
   }
@@ -312,7 +335,7 @@ function send_new_invite(e) {
   }, 800);*/
 }
 
-function init_results_page() {
+function showResults() {
   $("#cards-container").scrollTop(0);
 
   $('#page-results .template').clone().insertAfter('#page-results .template');
