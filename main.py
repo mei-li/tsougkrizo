@@ -122,7 +122,7 @@ async def host(request: Request):
     game_id = game_manager.gen_game_id()
     ws_url = request.url_for("websocket_host", game_id=game_id)
     return templates.TemplateResponse("player.html.jinja2", {
-        "request": request, "ws_url": ws_url, "is_host": "true" })
+        "request": request, "ws_url": ws_url, "is_host": "true"})
 
 
 @app.get("/{game_id}/join")
@@ -136,7 +136,7 @@ async def join(request: Request, game_id: UUID):
     return templates.TemplateResponse(template, {
         "request": request,
         "ws_url": request.url_for("websocket_join", game_id=game_id),
-        "is_host": "false" ,
+        "is_host": "false",
         "opponent_nickname": game['username'] if game else '',
         "error": error,
         "result": json.dumps(results) if results else "",
