@@ -7,7 +7,7 @@
 			<img id="tsougkrisma-logo" width="100%" src="{{ url_for('static', path='/logo_lowres.svg') }} ">
 		</div>
     	<div class="content">
-    		<p class="instructions ">Καλωσήρθες! </br> Πως να σε συστήσω;</p>
+    		<p class="instructions">Τσούγκρισε ενα αυγό με ένα αγαπημένο πρόσωπο!</br>Γράψε το όνομα σου για να ξεκινήσεις</p>
     		<div class="c-formContainer">
 				<form class="c-form nameform" autocomplete="off" action="">
 			    	<input autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"id="nickname" class="c-form__input" placeholder="Όνομα" type="text" pattern="[A-Za-zΑ-Ωα-ω0-9άέίϊΐόήώύϋΰΆΈΊΪΌΉΏΎΫς\s]{1,30}$" required>
@@ -22,10 +22,13 @@
 		</div>
     </div>
     <div id="page-waiting-room" class="container">
+		<div class="logo">
+			<img id="tsougkrisma-logo" width="100%" src="{{ url_for('static', path='/logo_lowres.svg') }} ">
+		</div>
     	<div class="content">
     		<p class="instructions"></p>
 			<img id="loading-icon" width="64px" src="{{ url_for('static', path='/loader.gif') }} ">
-			<p class="notes"></p>
+			<p class="notes inactive"></p>
 			<div id="button-invitation" class="c-fake-button">
 				<p></p>
 			</div>

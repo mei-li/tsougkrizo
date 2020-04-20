@@ -18,6 +18,7 @@ html, body {
 	padding:0;
 	margin:0;
 	overscroll-behavior-y: contain; /*for preventing swipe to refresh*/
+	overflow: hidden;
 	/*transform: perspective(1px) scale(1.0);*/
 }
 
@@ -63,11 +64,15 @@ body {
     width: 100%;
 	position: absolute;
 	text-align: center;
+	grid-area: hea;
 }
 
 #tsougkrisma-logo {
-	max-width:150vh;
-	
+	/*max-width:150vh;*/
+	min-width: 0;
+	object-fit: fill;
+	min-height: 60%;
+	width: 100%;
 }
 
 #tsougkrizo-watermark {
@@ -131,6 +136,18 @@ body {
 	
 }
 
+.p1, .p2  {
+	background: url('highlight.png') no-repeat;
+	padding: 3em 3em 3em 2em;
+	margin: -3em -3em -3em -2em;
+	background-position: center;
+	background-size: contain;
+}
+
+.vs {
+    position: relative;
+}
+
 .subnote {
 	font-size: 0.8em;
 	color: #ff7b73;
@@ -145,8 +162,9 @@ body {
 }
 
 .egg-result {
-	height: 50vh;
-	width: auto;
+	object-fit: contain;
+	width: 100%;
+	height: 100%;
 }
 
 #guest{
@@ -157,7 +175,7 @@ body {
 	position: absolute;
 	display:grid;
 	grid-template-columns: 1fr 5fr 1fr;
-	grid-template-rows: 1fr 21fr 2fr;
+	grid-template-rows: 7fr 21fr 2fr;
 	grid-template-areas: 
 		"hea hea hea"
 		". cont ."
@@ -171,9 +189,18 @@ body {
 	background-image: url("noise_light.png");
 }
 
+#page-results.container {
+	grid-template-columns: 1fr 5fr 1fr;
+	grid-template-rows: 1fr 20fr 1fr;
+	grid-template-areas: 
+		"hea hea hea"
+		". cont ."
+		"adv adv adv";
+}
+
 .clean-grid {
 	grid-template-columns: 1fr 5fr 1fr;
-	grid-template-rows: 2fr 21fr 1fr;
+	grid-template-rows: 7fr 21fr 1fr;
 	grid-template-areas: 
 		"hea hea ."
 		". cont ."
@@ -186,12 +213,14 @@ body {
 	max-height: 100px;
 	text-align: center;
 	background-color: #36786EED;
+	min-width: 0;
+	min-height: 0;
 }
 
 .titroo-banner img {
-	max-height:100px;
-	width:100%;
-	max-width:700px;
+	object-fit: contain;
+	width: 100%;
+	height: 100%;
 }
 
 .content{
@@ -214,7 +243,9 @@ body {
 }
 
 #cards-container {
-	overflow: scroll;
+	/*overflow-y: auto;
+	overflow-x: hidden;*/
+	overflow:initial;
 	grid-area: car1;
 }
 
@@ -285,6 +316,11 @@ body {
 	opacity:0;
 }
 
+p.instructions {
+	margin: 0 0.5em 1.5em 0.5em;
+	text-align: center;
+}
+
 p.instructions, .c-fake-button p {
 	font-size: 1.5em;
 	padding: 0vw;
@@ -338,7 +374,7 @@ p.instructions, .c-fake-button p {
 .c-form {
   width: 100%;
   /*big height: 6.25em;*/
-  height: 3.25em;
+  height: 4.25em;
 }
 
 .c-form.nameform {
@@ -352,6 +388,7 @@ p.instructions, .c-fake-button p {
   position: relative;
   font-weight: 700;
   width:100%;
+  flex-basis: max-content;
 }
 
 .c-fake-button {
@@ -593,7 +630,6 @@ result page (html)
 .horizontal-buttons #button-share-results {
 	max-width: min-content;
 }
-
 
 .export-url {
 	margin-right: 15px;

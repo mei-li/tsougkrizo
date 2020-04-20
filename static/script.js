@@ -43,8 +43,8 @@ $( document ).ready(function() {
     gaEvent("visit_result"); //you came here by visiting somebody's shared results page
     console.log("THERE IS result:" + global.result);
     global.last_eggroll = global.result.outcome;
-    global.opponent_nickname = global.result.host;
-    global.username = global.result.opponent;
+    global.opponent_nickname = global.result.opponent;
+    global.username = global.result.host;
     global.persistent_url = window.location.href;
     registerResultInteractivity();
     registerShare(function(){
@@ -294,12 +294,12 @@ function setnickname_and_progress(e) {
   //initialize waiting room
   init_waiting_room();
   $('#page-nickname').addClass('animated fadeOut faster');
-  $('#page-waiting-room').addClass('animated fadeIn slow');
+  $('#page-waiting-room').addClass('animated fadeIn faster');
   $('#page-waiting-room').addClass('active');
   setTimeout(function(){
     $('#page-nickname').removeClass('active');
       $('#page-nickname').removeClass('animated fadeOut faster');
-      $('#page-waiting-room').removeClass('animated fadeIn slow');
+      $('#page-waiting-room').removeClass('animated fadeIn faster');
   }, 800);
 }
 
@@ -308,7 +308,9 @@ function init_waiting_room()
   if (global.username == null) {console.log("error initing waiting room. Why is username unset?");}
   if (global.is_host) {
     $('#button-invitation').addClass('active');
-    $("#page-waiting-room .instructions").html("Στείλε μια πρόσκληση σε ένα αγαπημένο σου πρόσωπο και τσουγκρίστε παρέα!");
+    $("#page-waiting-room .instructions").html(
+      "Πάτησε Αποστολή για να στείλεις την πρόσκληση. Ο ίδιος σύνδεσμος μπορεί να χρησιμοποιηθεί αργότερα για να δεις τα αποτελέσματα του τσουγκρίσματος."
+      );
     $('#button-invitation p').html("Αποστολή <svg><use href=\"#share-icon\"></use></svg>");
   } else{
     console.log('init waiting room here is the friend ')
@@ -320,9 +322,11 @@ function init_waiting_room()
 function connecting_waiting_room()
 {
   if (global.is_host){
+    //$('#page-waiting-room.logo').addClass('inactive');
     $("#button-invitation p").html("Επαναποστολή <svg><use href=\"#share-icon\"></use></svg>");
-    $("#page-waiting-room .instructions").html("Αναμονή σύνδεσης, κράτησε αυτό το παράθυρο ανοιχτό. </p>");
-    $("#page-waiting-room .notes").html("<p> Μπορείς να ξαναστείλεις την πρόσκληση πατώντας το παρακάτω πλήκτρο. Κάθε πρόσκληση μπορείς να την στείλεις σε ένα μόναχα άτομο</p>");
+    $("#page-waiting-room .instructions").html("Αναμονή προσκεκλημένου: κράτησε αυτό το παράθυρο ανοιχτό ώσπου να ξεκινήσει το τσούγκρισμα!");
+    $("#page-waiting-room .notes").removeClass("inactive");
+    $("#page-waiting-room .notes").html("Μπορείς να ξαναστείλεις την πρόσκληση πατώντας το παρακάτω πλήκτρο. Κάθε πρόσκληση μπορείς να την στείλεις σε ένα μόναχα άτομο");
   }else{
     console.log('friends has arrived ')
     connect();
@@ -430,7 +434,7 @@ function showResult() {
   $('#page-results .template:last').removeAttr("style");
   $('#page-results .template:last').addClass("results-card animated tada delay-3s slow");
   $('#page-results .template:last').removeClass("template");
-  $(".results-card:first .versus-title").html(global.username + "<span class=\"subnote inactive\">(Εγω)</span> VS " +global.opponent_nickname);
+  $(".results-card:first .versus-title").html("<span class=\"p1\">"+global.username + "</span><span class=\"subnote inactive\">(Εγω)</span> <span class=\"vs\">VS</span> <span class=\"p2\">" +global.opponent_nickname+"</span>");
 
   $(".results-card:first .tag-line").html("Πωπω, κατατροπώθηκε το αυγό σου <span class=\"accent\">" + global.username + "</span>! <br> Δεν πειράζει όμως, πάντα με υγεία!");
   if ((global.last_eggroll.front) && (global.last_eggroll.back)){
