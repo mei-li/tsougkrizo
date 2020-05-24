@@ -23,8 +23,8 @@ var invitationbutton = document.getElementById("button-invitation");
 var nicknamefield = document.getElementById('nickname');
 var buttonnewinvitation = document.getElementById("button-new-invitation");
 var buttonreset = document.getElementById("button-reset");
-var buttonshareresults = document.getElementById("button-share-results");
-const shareDialog = document.querySelector('.share-dialog');
+var buttonshareresults = document.getElementById("button-play-link-results");
+const shareDialog = document.querySelector('.play-link-dialog');
 const closeButton = document.querySelector('.close-button');
 const copyButton = document.querySelector('.copy-link');
 var shareDialogEventListener;
@@ -307,7 +307,7 @@ function init_waiting_room()
   if (global.is_host) {
     $('#button-invitation').addClass('active');
     $("#page-waiting-room .instructions").html("Στείλε μια πρόσκληση σε ένα αγαπημένο σου πρόσωπο και τσουγκρίστε παρέα!");
-    $('#button-invitation p').html("Αποστολή <svg><use href=\"#share-icon\"></use></svg>");
+    $('#button-invitation p').html("Αποστολή <svg><use href=\"#play-link-icon\"></use></svg>");
   } else{
     console.log('init waiting room here is the friend ')
     $('#button-invitation').removeClass('active');
@@ -318,7 +318,7 @@ function init_waiting_room()
 function connecting_waiting_room()
 {
   if (global.is_host){
-    $("#button-invitation p").html("Επαναποστολή <svg><use href=\"#share-icon\"></use></svg>");
+    $("#button-invitation p").html("Επαναποστολή <svg><use href=\"#play-link-icon\"></use></svg>");
     $("#page-waiting-room .instructions").html("Αναμονή σύνδεσης, κράτησε αυτό το παράθυρο ανοιχτό. </p>");
     $("#page-waiting-room .notes").html("<p> Μπορείς να ξαναστείλεις την πρόσκληση πατώντας το παρακάτω πλήκτρο. Κάθε πρόσκληση μπορείς να την στείλεις σε ένα μόναχα άτομο</p>");
   }else{
