@@ -233,11 +233,6 @@ body {
 	font-size:1.20em;
 }
 
-#button-share-app {
-    width: 4em;
-    margin-left: 1em;
-}
-
 #mycanvas {
 	position: absolute;
 	width: 100%;
