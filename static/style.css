@@ -324,9 +324,9 @@ p.instructions, .c-fake-button p {
 }
 
 .maxwidth-50{max-width:50%;}
-.share-button {fill: #eee;}
+.play-link-button {fill: #eee;}
 
-.share-button:hover {fill: #fff;}
+.play-link-button:hover {fill: #fff;}
 
 /* codepen https://codepen.io/bertdida/pen/xyPKRX
 */
@@ -520,19 +520,19 @@ button:hover, .button:hover {
 	border-color: #cdd;
 }
 
-.share-button, .copy-link {
+.play-link-button, .copy-link {
 	padding-left: 30px;
 	padding-right: 30px;
 }
 
-.share-button, .share-dialog {
+.play-link-button, .play-link-dialog {
 	position: absolute;
 	top: 50%;
 	left: 50%;
 	transform: translate(-50%, -50%);
 }
 
-.share-dialog {
+.play-link-dialog {
 	display: none;
 	width: 84%;
 	max-width: 500px;
@@ -544,7 +544,7 @@ button:hover, .button:hover {
 	background-color: #fff;
 }
 
-.share-dialog.is-open {
+.play-link-dialog.is-open {
 	display: block;
 	z-index: 999;
 }
@@ -590,7 +590,7 @@ result page (html)
     margin-right: 1em;
 }
 
-.horizontal-buttons #button-share-results {
+.horizontal-buttons #button-play-link-results {
 	max-width: min-content;
 }
 
