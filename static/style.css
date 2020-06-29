@@ -288,6 +288,15 @@ p.instructions, .c-fake-button p {
 	font-family: "BPKinder";
 }
 
+p.instructions_2, .c-fake-button_2 p {
+	font-size: 1.2em;
+	text-align: justify;
+	padding: 0vw;
+	line-height: 1.3em;
+	max-width: 50em;
+	font-family: "BPKinder";
+}
+
 #instructions::before {
 	content: attr(data-title);
 }
@@ -368,6 +377,29 @@ p.instructions, .c-fake-button p {
 	align-items: center;
 	justify-content: center;
 }
+
+.c-fake-button_2 {
+	/*padding: 0.625em;*/
+	
+	padding: 1.5em;
+	box-sizing: border-box;
+	box-shadow: 0 0.125em 0.3125em rgba(0, 0, 0, 0.3);
+	width: 100%;
+	max-width: 15em;
+	/*big height: 6.25em;*/
+	height:2.25em;
+	border-radius: 6.25em;
+	transition: 0.2s;
+	background-color: #ff7b73;
+	color: white;
+	cursor: pointer;
+	z-index: 1;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+
 
 .c-fake-button p::before {
   font-size: 1.75em;
