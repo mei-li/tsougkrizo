@@ -365,7 +365,6 @@ p.instructions_2, .c-fake-button_2 p {
 
 .c-fake-button {
 	/*padding: 0.625em;*/
-	font-size: 1.5em;
 	padding: 1.5em;
 	box-sizing: border-box;
 	box-shadow: 0 0.125em 0.3125em rgba(0, 0, 0, 0.3);
