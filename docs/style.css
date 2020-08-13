@@ -1,0 +1,630 @@
+:root {
+	--background-color-1: #f9d48e;
+	--background-color-2: #f9d48e;
+	--background-color-3: #f9d48e;
+}
+
+
+html{
+	height:100%;
+	min-height:100%;
+}
+
+body{
+	min-height:100%;
+}
+
+html, body {
+	padding:0;
+	margin:0;
+	overscroll-behavior-y: contain; /*for preventing swipe to refresh*/
+	/*transform: perspective(1px) scale(1.0);*/
+}
+
+
+
+* {
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+  }
+  
+  
+
+::-webkit-scrollbar {
+    width: 0px;  /* Remove scrollbar space */
+    background: transparent;  /* Optional: just make scrollbar invisible */
+}
+
+input:focus,
+select:focus,
+textarea:focus,
+button:focus {
+    outline: none;
+}
+
+body {
+	font-size: 1em;
+    font-family: Roboto, Helvetica-Neue, Arial, sans-serif;
+	background-color: var(--background-color-1);
+	background: url('background.png') no-repeat;
+	/*-webkit-background-size: 100%;
+	-moz-background-size: 100%;
+	-o-background-size: 100%;
+	background-size: 100%;*/
+	-webkit-background-size: cover;
+	-moz-background-size: cover;
+	-o-background-size: cover;
+	background-size: cover;
+	background-origin: content-box;
+	background-position: top 0px left 0px;
+}
+
+.logo {
+    width: 100%;
+	position: absolute;
+	text-align: center;
+}
+
+#tsougkrisma-logo {
+	max-width:150vh;
+	
+}
+
+#tsougkrizo-watermark {
+    grid-area: hea;
+    width: 50%;
+	max-width: 15em;
+}
+
+.light-text {
+	opacity:0.7;
+}
+
+.notes {
+    text-align: center;
+}
+
+
+.tag-line{
+	font-family: "BPKinder";
+	font-size:1.3em;
+	font-weight: 300;
+	font-variant: small-caps;
+	line-height: 1.1em;
+	margin: 0 0 0 0;
+}
+
+
+
+.fielded-text {
+  text-shadow:   0px -6px 0 #212121,  
+                 0px -6px 0 #212121,
+                 0px  6px 0 #212121,
+                 0px  6px 0 #212121,
+                -6px  0px 0 #212121,  
+                 6px  0px 0 #212121,
+                -6px  0px 0 #212121,
+                 6px  0px 0 #212121,
+                -6px -6px 0 #212121,  
+                 6px -6px 0 #212121,
+                -6px  6px 0 #212121,
+                 6px  6px 0 #212121,
+                -6px  18px 0 #212121,
+                 0px  18px 0 #212121,
+                 6px  18px 0 #212121,
+                 0 19px 1px rgba(0,0,0,.1),
+                 0 0 6px rgba(0,0,0,.1),
+                 0 6px 3px rgba(0,0,0,.3),
+                 0 12px 6px rgba(0,0,0,.2),
+                 0 18px 18px rgba(0,0,0,.25),
+                 0 24px 24px rgba(0,0,0,.2),
+                 0 36px 36px rgba(0,0,0,.15);
+}
+
+.versus-title {
+	font-family: "Kayak";
+	font-size:2em;
+	font-weight: 900;
+	font-variant: small-caps;
+	line-height: 1.3;
+	margin: 0 0 0 0;
+	
+}
+
+.subnote {
+	font-size: 0.8em;
+	color: #ff7b73;
+}
+
+.accent {
+	color: #000;
+}
+
+.results-card{
+	text-align:center;
+}
+
+.egg-result {
+	height: 50vh;
+	width: auto;
+}
+
+#guest{
+	display: none;
+}
+.container{
+	z-index:100;
+	position: absolute;
+	display:grid;
+	grid-template-columns: 1fr 5fr 1fr;
+	grid-template-rows: 1fr 21fr 2fr;
+	grid-template-areas: 
+		"hea hea hea"
+		". cont ."
+		"adv adv adv";
+	min-height: 0;
+	min-width: 0;
+	height:100%;
+	width:100%;	
+	opacity:0;
+	visibility:hidden;
+	background-image: url("noise_light.png");
+}
+
+.clean-grid {
+	grid-template-columns: 1fr 5fr 1fr;
+	grid-template-rows: 2fr 21fr 1fr;
+	grid-template-areas: 
+		"hea hea ."
+		". cont ."
+		". . .";
+	}
+
+.titroo-banner{
+	grid-area: adv;
+	width: 100%;
+	max-height: 100px;
+	text-align: center;
+	background-color: #36786EED;
+}
+
+.titroo-banner img {
+	max-height:100px;
+	width:100%;
+	max-width:700px;
+}
+
+.content{
+	grid-area: cont;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	/*background-color: var(--background-color-2);*/
+	flex-direction: column;
+	display: inline-flex;
+    /*grid-template-columns: 1fr;
+    grid-template-rows: 1fr auto 1fr;
+    grid-template-areas: "nav1" "car1" "butt1";*/
+    min-height: 0;
+    min-width: 0;
+}
+
+#page-waiting-room .content{
+	
+}
+
+#cards-container {
+	overflow: scroll;
+	grid-area: car1;
+}
+
+.horizontal-buttons{
+	flex-direction: row;
+	display: inline-flex;
+	width:100%;
+	justify-content: center;
+}
+
+#button-new-invitation {
+	grid-area:butt1;
+}
+
+#button-new-invitation p {
+	font-size:1.20em;
+}
+
+#mycanvas {
+	position: absolute;
+	width: 100%;
+	height: 100%;
+	overflow: hidden;
+	top: 0;
+	left: 0;
+	margin: 0;
+	padding: 0;
+}
+
+.egg {
+    width: 100%;
+    height: 75%;
+    position: absolute;
+}
+
+/*#myegg {
+	top: 65%;
+}
+
+#enemyegg {
+	top: -35%;
+}
+
+.egg img {
+    height: 100%;
+    margin: auto;
+	display: block;
+}
+
+#myegg {
+	transform: rotateZ(180deg);
+}*/
+
+
+
+#loading-icon {
+	opacity:0;
+	display:none;
+}
+
+#button-invitation {
+	visibility:hidden;
+	opacity:0;
+}
+
+p.instructions, .c-fake-button p {
+	font-size: 1.5em;
+	padding: 0vw;
+	line-height: 1.3em;
+	max-width: 20em;
+	font-family: "BPKinder";
+}
+
+p.instructions_2, .c-fake-button_2 p {
+	font-size: 1.2em;
+	text-align: justify;
+	padding: 0vw;
+	line-height: 1.3em;
+	max-width: 50em;
+	font-family: "BPKinder";
+}
+
+#instructions::before {
+	content: attr(data-title);
+}
+
+.instructions.chr-ane {
+	font-size: 4em;
+	line-height: 1em;
+	font-family: "kayak";
+	padding: 0;
+	margin: 0 0 0.1em 0;	
+	font-weight: 100;
+}
+
+.container.active, #button-invitation.active {
+	opacity:100;
+	visibility: unset;
+}
+
+#loading-icon.active  {
+	opacity:100;
+	display: unset;
+}
+
+.inactive {
+	opacity:0;
+	visibility: hidden;
+	height:0;
+	display:none;
+}
+
+.maxwidth-50{max-width:50%;}
+.play-link-button {fill: #eee;}
+
+.play-link-button:hover {fill: #fff;}
+
+/* codepen https://codepen.io/bertdida/pen/xyPKRX
+*/
+.c-formContainer .c-form {
+  max-width: 37.5em;
+}
+
+.c-formContainer,
+.c-form {
+  width: 100%;
+  /*big height: 6.25em;*/
+  height: 3.25em;
+}
+
+.c-form.nameform {
+	height: 4.25em;
+	padding: 0.125em;
+}
+
+.nameform label {}
+
+.c-formContainer {
+  position: relative;
+  font-weight: 700;
+  width:100%;
+}
+
+.c-fake-button {
+	/*padding: 0.625em;*/
+	padding: 1.5em;
+	box-sizing: border-box;
+	box-shadow: 0 0.125em 0.3125em rgba(0, 0, 0, 0.3);
+	width: 100%;
+	max-width: 30em;
+	/*big height: 6.25em;*/
+	height:4.25em;
+	border-radius: 6.25em;
+	transition: 0.2s;
+	background-color: #ff7b73;
+	color: white;
+	cursor: pointer;
+	z-index: 1;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.c-fake-button_2 {
+	/*padding: 0.625em;*/
+	
+	padding: 1.5em;
+	box-sizing: border-box;
+	box-shadow: 0 0.125em 0.3125em rgba(0, 0, 0, 0.3);
+	width: 100%;
+	max-width: 15em;
+	/*big height: 6.25em;*/
+	height:2.25em;
+	border-radius: 6.25em;
+	transition: 0.2s;
+	background-color: #ff7b73;
+	color: white;
+	cursor: pointer;
+	z-index: 1;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+
+
+.c-fake-button p::before {
+  font-size: 1.75em;
+  content: attr(data-title);
+}
+
+#button-invitation.pressed {
+    box-shadow: unset;
+}
+
+.c-form {
+  position: absolute;
+  border-radius: 6.25em;
+  background-color: #ffffff;
+  transition: 0.2s;
+}
+
+.c-button {
+	position: absolute;
+	border-radius: 6.25em;
+	transition: 0.2s;
+	background-color: #ff7b73;
+	color: #ff7b73;
+	top: 0;
+	cursor: pointer;
+	z-index: 1;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+.c-button::before {
+  font-size: 1.75em;
+  content: attr(data-title);
+}
+
+.c-form {
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 0.625em;
+  box-sizing: border-box;
+  box-shadow: 0 0.125em 0.3125em rgba(0, 0, 0, 0.3);
+  display: flex;
+  justify-content: center;
+}
+
+.c-form__input,
+.c-form__button {
+  font: inherit;
+  border: 0;
+  outline: 0;
+  border-radius: 5em;
+  box-sizing: border-box;
+}
+
+.c-form__input,
+.c-form__buttonLabel {
+  /*big: font-size: 1.75em;*/
+  font-size:1.35em;
+  transform: scale(0.8);
+  transition: 0s;
+}
+
+.c-form__input {
+  color: #ffcccc;
+  height: 100%;
+  width: 100%;
+  padding: 0 0.714em;
+  flex: 3 3 auto;
+  min-width: 5em;
+}
+.c-form__input::placeholder {
+  color: currentColor;
+}
+.c-form__input:required:valid {
+  color: #ff7b73;
+}
+.c-form__input:required:valid + .c-form__buttonLabel {
+  color: #ffffff;
+}
+.c-form__input:required:valid + .c-form__buttonLabel::before {
+  pointer-events: initial;
+}
+
+.c-form__buttonLabel {
+	color: #ffaea9;
+	height: 100%;
+	width: auto;
+	pointer-events: none;
+	cursor: default;
+}
+.c-form__buttonLabel::before {
+  content: '';
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  cursor: pointer;
+}
+
+.c-form__button {
+  color: inherit;
+  padding: 0;
+  height: 100%;
+  min-width: 3em;
+  background-color: #ff7b73;
+}
+
+/*
+-----------------------
+web share API codepen
+https://codepen.io/ayoisaiah/pen/YbNazJ
+*/
+.hidden {
+	display: none;
+}
+
+svg {
+	width: 20px;
+	height: 20px;
+	margin-right: 7px;
+}
+
+button, .button {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	height: auto;
+	padding-top: 8px;
+	padding-bottom: 8px;
+	color: #777;
+	text-align: center;
+	font-size: 14px;
+	font-weight: 500;
+	line-height: 1.1;
+	letter-spacing: 2px;
+	text-transform: capitalize;
+	text-decoration: none;
+	white-space: nowrap;
+	border-radius: 4px;
+	border: 1px solid #ddd;
+	cursor: pointer;
+}
+
+button:hover, .button:hover {
+	border-color: #cdd;
+}
+
+.play-link-button, .copy-link {
+	padding-left: 30px;
+	padding-right: 30px;
+}
+
+.play-link-button, .play-link-dialog {
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+}
+
+.play-link-dialog {
+	display: none;
+	width: 84%;
+	max-width: 500px;
+	box-shadow: 0 8px 16px rgba(0,0,0,.15);
+	z-index: -1;
+	border: 1px solid #ddd;
+	padding: 20px;
+	border-radius: 4px;
+	background-color: #fff;
+}
+
+.play-link-dialog.is-open {
+	display: block;
+	z-index: 999;
+}
+
+header {
+	display: flex;
+	justify-content: space-between;
+	margin-bottom: 20px;
+}
+
+/*.targets {
+	display: grid;
+	grid-template-rows: 1fr 1fr;
+	grid-template-columns: 1fr 1fr;
+	grid-gap: 20px;
+	margin-bottom: 20px;
+}*/
+
+.close-button {
+	background-color: transparent;
+	border: none;
+	padding: 0;
+}
+
+.close-button svg {
+	margin-right: 0;
+}
+
+.link {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	padding: 10px;
+	border-radius: 4px;
+	background-color: #eee;
+}
+
+/*
+result page (html)
+*/
+
+.horizontal-buttons #button-new-invitation {
+    margin-right: 1em;
+}
+
+.horizontal-buttons #button-play-link-results {
+	max-width: min-content;
+}
+
+
+.export-url {
+	margin-right: 15px;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
