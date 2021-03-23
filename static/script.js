@@ -427,7 +427,7 @@ function showResult() {
 
   $(".results-card:first .tag-line").html("Πωπω, κατατροπώθηκε το αυγό σου <span class=\"accent\">" + global.username + "</span>! <br> Δεν πειράζει όμως, πάντα με υγεία!");
   if ((global.last_eggroll.front) && (global.last_eggroll.back)){
-    $(".results-card:first .tag-line").html("Το αυγό σου <span class=\"accent\">" + global.username + "</span> αποδείχθηκε πρωταθλητής! Πάντα Καλότυχος!");
+    $(".results-card:first .tag-line").html("Το αυγό σου <span class=\"accent\">" + global.username + "</span> νίκησε! Πάντα τέτοια!");  // 
     $(".results-card:first img.egg-cracked-tip").remove();
     $(".results-card:first img.egg-cracked-butt").remove();
     $(".results-card:first img.egg-cracked-both").remove();
