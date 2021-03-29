@@ -16,17 +16,44 @@ var global = {
   persistent_url: null,
 };
 
+/*
+Initialization
+--------------
+register event listeners
+name page is shown by html
+
+Game flow
+---------
+HOST
+****
+(user adds name) -> transitNamePageToInvitePage -> 	showInvitePage -> 
+(wait for invitation url if host) -> displayShare -> showWaitingPage ->
+(player arrived) -> (get results) -> 
+websocket outcome -> showGamePage -> transitGamePageToResultsPage -> showResultPage
+
+PLAYER
+******
+(user adds name) -> transitNamePageToInvitePage -> 	showInvitePage -> showWaitingPage
+(get results from wbesocket) -> showGamePage -> transitGamePageToResultsPage -> showResultPage
+
+
+PLAYED GAME
+***********
+showResultPage
+
+
+*/
 
 // Initialization of JS objects
 Sentry.init({ dsn: 'https://195894b38c894c25ba5c4111599fb9d7@o378832.ingest.sentry.io/5202856' });
 
 
+var buttonreset = document.getElementById("button-reset");
 var buttonnewinvitation = document.getElementById("button-new-invitation");
 var buttonshareresults = document.getElementById("button-play-link-results");
 const shareDialog = document.querySelector('.play-link-dialog');
 const closeButton = document.querySelector('.close-button');
 const copyButton = document.querySelector('.copy-link');
-var shareDialogEventListener;
 var shareDialogCopyEventListener;
 
 
@@ -35,9 +62,9 @@ $( document ).ready(function() {
 
   if (global.result === null) {  // new game
     registerErroHandling();
-    registerBaseGame(setnickname_and_progress);
-    registerShare(connecting_waiting_room);
+    registerBaseGame(transitNamePageToInvitePage);
     registerInvitation();
+    registerShare(showWaitingPage);
     if (global.error != ''){
       handle_invalid_game();
     }
@@ -50,7 +77,7 @@ $( document ).ready(function() {
     global.persistent_url = window.location.href;
     registerResultInteractivity();
     registerShare();
-    showResult();
+    showResultPage();
   }
 
 });
@@ -101,7 +128,6 @@ function registerBaseGame(callback){
 
 
 function registerErroHandling(){
-  var buttonreset = document.getElementById("button-reset");
   buttonreset.addEventListener('click', function (e) {
     //reset the app button
     window.location = "/";
@@ -153,7 +179,7 @@ function connect(onurl) {
     {
       global.opponent_nickname = parsed_data.opponent;
       global.game_played = true;
-      init_page_game(parsed_data.outcome);
+      showGamePage(parsed_data.outcome);
       console.log("game init");
     }
     else if ("error" in parsed_data){
@@ -193,9 +219,21 @@ function handle_invalid_game(){
   init_error_page();
 }
 
+function animateInvitationButton(){
+  $("#button-invitation").addClass("pressed");
+  setTimeout(function(){
+    $("#button-invitation").removeClass("pressed");
+  }, 200);
+}
+
+
+function activateInvitationButton(){
+  $("#button-invitation p").addClass("animated pulse infinite slow delay-1s");
+}
+
 function closedialog(callback){
   shareDialog.classList.remove('is-open');
-  $("#button-invitation p").addClass("animated pulse infinite slow delay-1s");
+  activateInvitationButton();
   if (typeof callback !== 'undefined') {
     callback();
   }
@@ -224,11 +262,8 @@ function registerInvitation(){
   var invitationbutton = document.getElementById("button-invitation");
   invitationbutton.addEventListener('click', function(e) {
     shareablelink = $("#copied-url").attr("value");
-    $("#button-invitation").addClass("pressed");
-    setTimeout(function(){
-      $("#button-invitation").removeClass("pressed");
-    }, 200);
-    $("#button-invitation p").addClass("animated pulse infinite slow delay-1s");
+    animateInvitationButton();
+    activateInvitationButton();
     if (shareablelink){
       console.log('Resend: ' + shareablelink);
       gaEvent("reshare_game");
@@ -236,21 +271,19 @@ function registerInvitation(){
     }
     else {
       gaEvent("share_game");
-      connect(displayShare);
+      connect(displayShare);  // wait to get share game url from wesocket
     }
     e.preventDefault();
   });
 }
+
 
 function displayShare(shareablelink){
   shareLink(
     'Πρόσκληση για Τσούγκρισμα',
     'Ο/η ' + global.username + ' σε προσκάλεσε να τσουγκρίσετε αυγά! Πάτησε τον σύνδεσμο για να ανταποκριθείς. ',
     shareablelink,
-    function () {
-      $("#button-invitation p").addClass("animated pulse infinite slow delay-1s");
-      connecting_waiting_room();
-    }
+    shareDialogCloseEventListener
   );
 }
 
@@ -273,11 +306,13 @@ function shareLink(title, text, link, callback){
   }
 }
 
-function setnickname_and_progress() {
+function transitNamePageToInvitePage() {
   global.username = $('#nickname')[0].value;
   gaEvent("name_set");
   //initialize waiting room
-  init_waiting_room();
+  showInvitePage();
+
+  // animating things
   $('#page-nickname').addClass('animated fadeOut faster');
   $('#page-waiting-room').addClass('animated fadeIn slow');
   $('#page-waiting-room').addClass('active');
@@ -288,7 +323,7 @@ function setnickname_and_progress() {
   }, 800);
 }
 
-function init_waiting_room()
+function showInvitePage()
 {
   if (global.username == null) {console.log("error initing waiting room. Why is username unset?");}
   if (global.is_host) {
@@ -298,11 +333,11 @@ function init_waiting_room()
   } else{
     console.log('init waiting room here is the friend ')
     $('#button-invitation').removeClass('active');
-    connecting_waiting_room();  //don't ask to send invite, skip straight to connecting!
+    showWaitingPage();  //don't ask to send invite, skip straight to connecting!
   }
 }
 
-function connecting_waiting_room()
+function showWaitingPage()
 {
   if (global.is_host){
     $("#button-invitation p").html("Επαναποστολή <svg><use href=\"#play-link-icon\"></use></svg>");
@@ -321,7 +356,7 @@ function connecting_waiting_room()
   }, 500);
 }
 
-function timeline_finished(hypeDocument, element, event) {
+function transitGamePageToResultsPage(hypeDocument, element, event) {
   // display the name of the Hype container and the event called
   console.log(event);
   if (event.type === "HypeTimelineComplete"){
@@ -334,14 +369,14 @@ function timeline_finished(hypeDocument, element, event) {
       copyButton.removeEventListener('click', shareDialogCopyEventListener);
       registerShare();
       registerResultInteractivity();
-      showResult();
+      showResultPage();
       return false;
     }
   }
 
 }
 
-function init_page_game(eggroll)
+function showGamePage(eggroll)
 {
   $('#loading-icon').removeClass('active');
   global.last_eggroll=eggroll;
@@ -351,10 +386,7 @@ function init_page_game(eggroll)
   if("HYPE_eventListeners" in window === false) {
     window.HYPE_eventListeners = Array();
   }
-  //patch???
-  /*console.log(eggroll);
-  global.opponent_nickname=eggroll["opponent"];*/
-  window.HYPE_eventListeners.push({"type":"HypeTimelineComplete", "callback": timeline_finished});
+  window.HYPE_eventListeners.push({"type":"HypeTimelineComplete", "callback": transitGamePageToResultsPage});
   HYPE.documents['eggs_animated01'].customData['front']=eggroll["front"];
   HYPE.documents['eggs_animated01'].customData['back']=eggroll["back"];
   HYPE.documents['eggs_animated01'].customData['opponent_name']=global.opponent_nickname;
@@ -368,12 +400,10 @@ function init_page_game(eggroll)
       $('#page-waiting-room').removeClass('animated fadeOut faster');
       $('#page-game').removeClass('animated fadeIn fast');
   }, 400);
-  //$('#myegg').addClass('animated slideInUp slow');
-  //$('#enemyegg').addClass('animated slideInUp slow delay-1s');
 }
 
 
-function showResult() {
+function showResultPage() {
   $("#cards-container").scrollTop(0);
 
   $('#page-results .template').clone().insertAfter('#page-results .template');
