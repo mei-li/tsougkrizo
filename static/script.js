@@ -1,4 +1,5 @@
-var global = {
+// Global game state
+var global = {  
   ws: null,
   username: null,
   ws_url: ws_url,  // from base template
@@ -15,14 +16,12 @@ var global = {
   persistent_url: null,
 };
 
+
+// Initialization of JS objects
 Sentry.init({ dsn: 'https://195894b38c894c25ba5c4111599fb9d7@o378832.ingest.sentry.io/5202856' });
 
 
-var setnamebutton = document.getElementById("setname");
-var invitationbutton = document.getElementById("button-invitation");
-var nicknamefield = document.getElementById('nickname');
 var buttonnewinvitation = document.getElementById("button-new-invitation");
-var buttonreset = document.getElementById("button-reset");
 var buttonshareresults = document.getElementById("button-play-link-results");
 const shareDialog = document.querySelector('.play-link-dialog');
 const closeButton = document.querySelector('.close-button');
@@ -30,16 +29,20 @@ const copyButton = document.querySelector('.copy-link');
 var shareDialogEventListener;
 var shareDialogCopyEventListener;
 
+
+
 $( document ).ready(function() {
-  if (global.result === null) {
-    registerBaseGame();
+
+  if (global.result === null) {  // new game
+    registerErroHandling();
+    registerBaseGame(setnickname_and_progress);
     registerShare(connecting_waiting_room);
     registerInvitation();
     if (global.error != ''){
       handle_invalid_game();
     }
   }
-  else {
+  else { // game played, showing results
     console.log("THERE IS result:" + global.result);
     global.last_eggroll = global.result.outcome;
     global.opponent_nickname = global.result.host;
@@ -81,25 +84,29 @@ function shareResult()
   );
 }
 
-function registerBaseGame(){
+function registerBaseGame(callback){
+  /* Set name, error button and set name button hanldlers */
+  var nicknamefield = document.getElementById('nickname');
   nicknamefield.addEventListener('keydown', function (e) {if (e.key === "Enter" && nicknamefield.checkValidity()) {
     console.log(nicknamefield.checkValidity());
-    setnickname_and_progress(e);}
+    e.preventDefault();
+    callback();}
   });
+  var setnamebutton = document.getElementById("setname");
   setnamebutton.addEventListener('click', function (e) {
-    setnickname_and_progress(e);
+    e.preventDefault();
+    callback();
   });
-  /*buttonnewinvitation.addEventListener('click', function (e) {
-    //go back to the waiting room (if you were a guest, now you are host)
-    send_new_invite(e);
-    gaEvent("play_again");
-  });*/
+}
+
+
+function registerErroHandling(){
+  var buttonreset = document.getElementById("button-reset");
   buttonreset.addEventListener('click', function (e) {
     //reset the app button
     window.location = "/";
 });
 }
-
 
 function connect(onurl) {
   //here
@@ -195,15 +202,11 @@ function closedialog(callback){
 }
 
 function registerShare(callback){
-  
+  /* Add share button set callback after sharing open, clode, copy hanlders  */
   shareDialogCloseEventListener = function (){
     closedialog(callback);
   }
   closeButton.addEventListener('click', shareDialogCloseEventListener);
-  
-  /*closeButton.addEventListener('click', event => {
-    closedialog(callback);
-  });*/
 
   shareDialogCopyEventListener = function (){
     var copyText = document.getElementById("copied-url");
@@ -214,26 +217,12 @@ function registerShare(callback){
     console.log("copied link");
   }
   copyButton.addEventListener('click', shareDialogCopyEventListener);
-
-  /*copyButton.addEventListener('click', event => {
-    var copyText = document.getElementById("copied-url");
-    copyText.select();
-    copyText.setSelectionRange(0, 99999);
-    document.execCommand("copy");
-    closedialog(callback);
-    console.log("copied link");
-  });*/
 }
 
 function registerInvitation(){
 
+  var invitationbutton = document.getElementById("button-invitation");
   invitationbutton.addEventListener('click', function(e) {
-    //if ($("#copied-url").hasClass("socket-open")){
-      //it's a re-send button
-      //displayShare();
-    //} else {
-      //if NO .socket-open class on the DOM tree, the sockets haven't returned an address yet
-      //so we assume it hasn't even opened (bug:there is time-gap - it might simply be that it hasn't returned yet)
     shareablelink = $("#copied-url").attr("value");
     $("#button-invitation").addClass("pressed");
     setTimeout(function(){
@@ -284,9 +273,7 @@ function shareLink(title, text, link, callback){
   }
 }
 
-function setnickname_and_progress(e) {
-  e.preventDefault();
-  console.log('Nickname and progress')
+function setnickname_and_progress() {
   global.username = $('#nickname')[0].value;
   gaEvent("name_set");
   //initialize waiting room
@@ -311,7 +298,7 @@ function init_waiting_room()
   } else{
     console.log('init waiting room here is the friend ')
     $('#button-invitation').removeClass('active');
-    connecting_waiting_room();//don't ask to send invite, skip straight to connecting!
+    connecting_waiting_room();  //don't ask to send invite, skip straight to connecting!
   }
 }
 
@@ -385,36 +372,6 @@ function init_page_game(eggroll)
   //$('#enemyegg').addClass('animated slideInUp slow delay-1s');
 }
 
-/* this functions is no longer needed but I've kept it as a memory of what it takes
-to reset the scene
-/*function send_new_invite(e) {
-  e.preventDefault();
-  global.is_host = true;
-  global.opponent_nickname = null;
-
-  //ToDo meili: do your websocket magic for the new host
-  //if you were already a host, do you need to make a new room or keep the same?
-  //
-  window.location = "/";
-  //when done, goto send invitation/initialize waiting room
-  //
-  // No need to execute following "reset" code since we reset the hard way!
-  //
-  /*HYPE.documents['eggs_animated01'].startTimelineNamed('Main Timeline', HYPE.documents['eggs_animated01'].kDirectionForward);
-  HYPE.documents['eggs_animated01'].goToTimeInTimelineNamed(0,'Bump Timeline Butt');
-  HYPE.documents['eggs_animated01'].goToTimeInTimelineNamed(0,'Bump Timeline');
-  $('#loading-icon').removeClass('active');
-  $('#button-invitation').addClass('active');
-  init_waiting_room();
-  $('#page-results').addClass('animated fadeOut faster');
-  $('#page-waiting-room').addClass('animated fadeIn slow');
-  $('#page-waiting-room').addClass('active');
-  setTimeout(function(){
-    $('#page-results').removeClass('active');
-      $('#page-results').removeClass('animated fadeOut faster');
-      $('#page-waiting-room').removeClass('animated fadeIn slow');
-  }, 800);*/
-//}
 
 function showResult() {
   $("#cards-container").scrollTop(0);
