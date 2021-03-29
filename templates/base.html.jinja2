@@ -50,6 +50,11 @@
             {% else %}
                 null
             {%- endif %};
+  var translations = {
+    en: "{{ url_for('static', path='/i18n/en.json') }}",
+    el: "{{ url_for('static', path='/i18n/el.json') }}",
+  }
+
 	</script>
   <body>
 	{% block content %}

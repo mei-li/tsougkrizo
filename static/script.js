@@ -56,10 +56,17 @@ const closeButton = document.querySelector('.close-button');
 const copyButton = document.querySelector('.copy-link');
 var shareDialogCopyEventListener;
 
-
+var update_texts = function() { $('body').i18n() };
+$('.lang-switch').click(function(e) {
+  e.preventDefault();
+  $.i18n().locale = $(this).data('locale');
+  update_texts();
+});
 
 $( document ).ready(function() {
-
+  
+  $.i18n().load(translations).done( function() { update_texts(); } );
+  
   if (global.result === null) {  // new game
     registerErroHandling();
     registerBaseGame(transitNamePageToInvitePage);

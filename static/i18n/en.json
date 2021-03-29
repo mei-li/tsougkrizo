@@ -1,0 +1,14 @@
+{
+    "@metadata": {
+      "authors": [
+        "mei-li"
+      ],
+      "last-updated": "2021-03-29",
+      "locale": "en",
+      "message-documentation": "qqq"
+    },
+    "appname-title": "Example Application in english",
+    "appname-sub-title": "An example application with jquery.i18n in english",
+    "welcome": "Welcome",
+    "instructions": "Welcome! Add a name to start"
+  }

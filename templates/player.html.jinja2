@@ -1,13 +1,16 @@
 {% extends "base.html.jinja2" %}
 
 {% block content %}
+	<a href="#" class="lang-switch" data-locale="en">English</a> |
+    <a href="#" class="lang-switch" data-locale="el">Ελληνικά</a>
+
 <!-- page content -->
     <div id="page-nickname" class="container active">
 		<div class="logo">
 			<img id="tsougkrisma-logo" width="100%" src="{{ url_for('static', path='/logo_lowres.svg') }} ">
 		</div>
     	<div class="content">
-    		<p class="instructions ">Καλωσήρθες! </br> Πως να σε συστήσω;</p>
+    		<p class="instructions " data-i18n="instructions">Καλωσήρθες! </br> Πως να σε συστήσω;</p>
     		<div class="c-formContainer">
 				<form class="c-form nameform" autocomplete="off" action="">
 			    	<input autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"id="nickname" class="c-form__input" placeholder="Όνομα" type="text" pattern="[A-Za-zΑ-Ωα-ω0-9άέίϊΐόήώύϋΰΆΈΊΪΌΉΏΎΫς\s]{1,30}$" required>
@@ -103,6 +106,14 @@
 {% endblock %}
 {% block last %}
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js">
+   <script src="{{ url_for('static', path='/jquery.i18n/CLDRPluralRuleParser.js') }}"></script>
+ <script src="{{ url_for('static', path='/jquery.i18n/jquery.i18n.js') }}"></script>
+ <script src="{{ url_for('static', path='/jquery.i18n/jquery.i18n.messagestore.js') }}"></script>
+ <script src="{{ url_for('static', path='/jquery.i18n/jquery.i18n.fallbacks.js') }}"></script>
+ <script src="{{ url_for('static', path='/jquery.i18n/jquery.i18n.language.js') }}"></script>
+ <script src="{{ url_for('static', path='/jquery.i18n//jquery.i18n.parser.js') }}"></script>
+ <script src="{{ url_for('static', path='/jquery.i18n/jquery.i18n.emitter.js') }}"></script>
+ <script src="{{ url_for('static', path='/jquery.i18n/jquery.i18n.emitter.bidi.js') }}"></script>
 </script>
   <script src="{{ url_for('static', path='/script.js') }}"></script>
 {% endblock %}

@@ -1,0 +1,14 @@
+{
+    "@metadata": {
+      "authors": [
+        "mei-li"
+      ],
+      "last-updated": "2021-03-29",
+      "locale": "el",
+      "message-documentation": "qqq"
+    },
+    "appname-title": "Παράδειγμα εφαρμογής στα ελληνικά",
+    "appname-sub-title": "Υποτιτλος",
+    "welcome": "Καλωσήρθες",
+    "instructions": "Καλωσήρθες! Πως να σε συστήσω;"
+  }
