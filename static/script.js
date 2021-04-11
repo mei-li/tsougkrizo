@@ -335,7 +335,7 @@ function showInvitePage()
   if (global.username == null) {console.log("error initing waiting room. Why is username unset?");}
   if (global.is_host) {
     $('#button-invitation').addClass('active');
-    $("#page-waiting-room .instructions").html("Στείλε μια πρόσκληση σε ένα αγαπημένο σου πρόσωπο και τσουγκρίστε παρέα!");
+    $("#page-waiting-room .instructions").html($.i18n('send-invite-message'));
     $('#button-invitation p').html("Αποστολή <svg><use href=\"#play-link-icon\"></use></svg>");
   } else{
     console.log('init waiting room here is the friend ')
