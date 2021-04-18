@@ -7,11 +7,9 @@
       "locale": "en",
       "message-documentation": "qqq"
     },
-    "appname-title": "Example Application in english",
-    "appname-sub-title": "An example application with jquery.i18n in english",
-    "welcome": "Welcome",
     "instructions": "Welcome! <br/> Type your nickname",
     "easter-wish": "Christ is risen!",
     "send-invite-message": "Send an invitation to a friend to tap your eggs together!",
-    "new-confrontation": "New Game"
+    "new-confrontation": "New Game",
+    "title": "Tap easter egg"
   }

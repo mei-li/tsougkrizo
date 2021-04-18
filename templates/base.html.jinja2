@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="el">
+<html lang="{{locale}}">
   <head>
   <!-- Global site tag (gtag.js) - Google Analytics -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=UA-37653732-2"></script>
@@ -25,7 +25,7 @@
     
     {% block switchmeta %}
     <meta charset="utf-8">
-    <title>Τσουγκρίζω πασχαλινο αυγό</title>
+    <title>{{title}}</title>
     <meta name="description" content="Τσούγκρισμα αυγών">
     <!-- OG Meta Tags to improve the way the post looks when you share the page on LinkedIn, Facebook, Google+ -->
     <meta property="og:site" content="{{ url_for('host') }}"> <!-- website link -->

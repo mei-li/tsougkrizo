@@ -9,8 +9,9 @@ from uuid import UUID, uuid4
 
 import sentry_sdk
 
+from enum import Enum
 from fastapi import FastAPI, WebSocket, Request
-from fastapi.responses import HTMLResponse
+from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from starlette.websockets import WebSocketDisconnect
@@ -24,6 +25,33 @@ app.mount("/static", StaticFiles(directory="static"), name="static")
 templates = Jinja2Templates(directory="templates")
 
 
+def get_translations():
+    locales = ['en', 'el']
+    translations = {}
+
+    for locale in locales:
+        with open(f'static/i18n/{locale}.json', encoding='utf-8') as f:
+            translations[locale] = json.load(f)
+        translations[locale]["locale"] = locale
+
+    return translations
+
+
+translations = get_translations()
+
+
+def get_locale(request):
+    # TODO get locale from url if present
+    # TODO get locale from geolocate
+    return Locale.default
+
+
+class Locale(str, Enum):
+    greek = "el"
+    english = "en"
+    default = "en"
+
+
 class ErrorCode:
     invalid_game = 'INVALID_GAME'
 
@@ -34,10 +62,13 @@ class GameError(Exception):
 
 @app.exception_handler(StarletteHTTPException)
 async def http_exception_handler(request, exc):
+    locale = get_locale(request)
+    translation = translations.get(locale, Locale.default)
+
     return templates.TemplateResponse(
-        "error.html.jinja2", {
-        "request": request,
-        }, status_code=exc.status_code)
+        "error.html.jinja2",
+        {'request': request, **translation},
+        status_code=exc.status_code)
 
 
 @app.exception_handler(Exception)
@@ -119,14 +150,25 @@ game_manager = GameManager()
 
 @app.get("/")
 async def host(request: Request):
+    # TODO load the language selection page
+    locale = get_locale(request)
+    return RedirectResponse(url=f'/{locale}')
+
+
+@app.get("/{locale}/")
+async def host(request: Request, locale: Locale):
+    translation = translations.get(locale, Locale.default)
     game_id = game_manager.gen_game_id()
-    ws_url = request.url_for("websocket_host", game_id=game_id)
-    return templates.TemplateResponse("player.html.jinja2", {
-        "request": request, "ws_url": ws_url, "is_host": "true"})
+    ws_url = request.url_for("websocket_host", game_id=game_id, locale=locale.value)
+    kk = {
+        "request": request, "ws_url": ws_url, "is_host": "true",
+        **translation}
+    return templates.TemplateResponse("player.html.jinja2", kk)
 
 
-@app.get("/{game_id}/join")
-async def join(request: Request, game_id: UUID):
+@app.get("/{locale}/{game_id}/join")
+async def join(request: Request, game_id: UUID, locale: Locale):
+    translation = translations.get(locale, Locale.default)
     game = game_manager.get_game(game_id)
     results = game_manager.get_results_for_player(game_id)
     error = ''
@@ -135,16 +177,17 @@ async def join(request: Request, game_id: UUID):
     template = "player.html.jinja2" if not results else "result.html.jinja2"
     return templates.TemplateResponse(template, {
         "request": request,
-        "ws_url": request.url_for("websocket_join", game_id=game_id),
+        "ws_url": request.url_for("websocket_join", game_id=game_id, locale=locale.value),
         "is_host": "false",
         "opponent_nickname": game['username'] if game else '',
         "error": error,
         "result": json.dumps(results) if results else "",
+        **translation
         })
 
 
-@app.websocket("/ws/{game_id}")
-async def websocket_host(websocket: WebSocket, game_id: UUID):
+@app.websocket("/ws/{locale}/{game_id}")
+async def websocket_host(websocket: WebSocket, game_id: UUID, locale: Locale):
     await websocket.accept()
     game = game_manager.get_game(game_id)
     results = game_manager.get_results_for_host(game_id)
@@ -159,7 +202,7 @@ async def websocket_host(websocket: WebSocket, game_id: UUID):
         print("In player 1", game_id, game['username'], flush=True)
         game_manager.set_game(game_id, game)
         await websocket.send_json({
-            'invitation_url': websocket.url_for('join', game_id=game_id)
+            'invitation_url': websocket.url_for('join', game_id=game_id, locale=locale.value)
         })
     elif results:
         await websocket.send_json(results)
@@ -170,7 +213,7 @@ async def websocket_host(websocket: WebSocket, game_id: UUID):
         data = await websocket.receive_json()
 
 
-@app.websocket("/ws/{game_id}/join")
+@app.websocket("/ws/{locale}/{game_id}/join")
 async def websocket_join(websocket: WebSocket, game_id: UUID):
     await websocket.accept()
     # Verify game is still on
