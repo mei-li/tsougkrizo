@@ -348,8 +348,9 @@ function showWaitingPage()
 {
   if (global.is_host){
     $("#button-invitation p").html("Επαναποστολή <svg><use href=\"#play-link-icon\"></use></svg>");
-    $("#page-waiting-room .instructions").html("Αναμονή σύνδεσης, κράτησε αυτό το παράθυρο ανοιχτό. </p>");
-    $("#page-waiting-room .notes").html("<p> Μπορείς να ξαναστείλεις την πρόσκληση πατώντας το παρακάτω πλήκτρο. Κάθε πρόσκληση μπορείς να την στείλεις σε ένα μόναχα άτομο</p>");
+    $("#page-waiting-room .instructions").html($.i18n('waiting-egg-fellow'));
+    $("#page-waiting-room .notes").html($.i18n('resend-invitation-note'));
+  
   }else{
     console.log('friends has arrived ')
     connect();
@@ -419,9 +420,12 @@ function showResultPage() {
   $('#page-results .template:last').removeClass("template");
   $(".results-card:first .versus-title").html(global.username + "<span class=\"subnote inactive\">(Εγω)</span> VS " +global.opponent_nickname);
 
-  $(".results-card:first .tag-line").html("Πωπω, κατατροπώθηκε το αυγό σου <span class=\"accent\">" + global.username + "</span>! <br> Δεν πειράζει όμως, πάντα με υγεία!");
+  $(".results-card:first .tag-line").html($.i18n('losing-egg', global.username));
+ 
   if ((global.last_eggroll.front) && (global.last_eggroll.back)){
-    $(".results-card:first .tag-line").html("Το αυγό σου <span class=\"accent\">" + global.username + "</span> νίκησε! Πάντα τέτοια!");  // 
+  
+    $(".results-card:first .tag-line").html($.i18n('winning-egg', global.username));   
+
     $(".results-card:first img.egg-cracked-tip").remove();
     $(".results-card:first img.egg-cracked-butt").remove();
     $(".results-card:first img.egg-cracked-both").remove();
@@ -429,12 +433,14 @@ function showResultPage() {
     $(".results-card:first img.egg-champion").remove();
     $(".results-card:first img.egg-cracked-butt").remove();
     $(".results-card:first img.egg-cracked-both").remove();
-    $(".results-card:first .tag-line").html("Το αυγό σου <span class=\"accent\">" + global.username + "</span> έσπασε, αλλά έσπασε και το δικό μου! <br> Με υγεία και του χρόνου!");
+    $(".results-card:first .tag-line").html($.i18n('draw-egg', global.username));
+    // $(".results-card:first .tag-line").html("Το αυγό σου <span class=\"accent\">" + global.username + "</span> έσπασε, αλλά έσπασε και το δικό μου! <br> Με υγεία και του χρόνου!");
   } else if (global.last_eggroll.front){
     $(".results-card:first img.egg-champion").remove();
     $(".results-card:first img.egg-cracked-tip").remove();
     $(".results-card:first img.egg-cracked-both").remove();
-    $(".results-card:first .tag-line").html("Το αυγό σου <span class=\"accent\">" + global.username + "</span> έσπασε, αλλά έσπασε και το δικό μου! <br> Με υγεία και του χρόνου!");
+    $(".results-card:first .tag-line").html($.i18n('draw-egg', global.username));
+    // $(".results-card:first .tag-line").html("Το αυγό σου <span class=\"accent\">" + global.username + "</span> έσπασε, αλλά έσπασε και το δικό μου! <br> Με υγεία και του χρόνου!");
   } else {
     $(".results-card:first img.egg-champion").remove();
     $(".results-card:first img.egg-cracked-tip").remove();

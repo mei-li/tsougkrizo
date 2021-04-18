@@ -11,5 +11,12 @@
     "easter-wish": "Christ is risen!",
     "send-invite-message": "Send an invitation to a friend to tap your eggs together!",
     "new-confrontation": "New Game",
-    "title": "Tap easter egg"
+    "title": "Tap easter egg",
+    "name": "Name",
+    "waiting-egg-fellow": "Waiting connection, keep this window open.",
+    "resend-invitation-note": "You can resend the invitation pressing the following button. You can send the invitation only to one person",
+    "send-link": "Copy & send the following link",
+    "winning-egg": "Your egg <span class=\"accent\"> $1 </span> won! Keep winning always!",
+    "losing-egg": "Oh no, your egg was owned <span class=\"accent\"> $1 </span>! <br> No worries, health comes first!",
+    "draw-egg": "Your egg <span class=\"accent\"> $1 </span> broke, but mine as well! <br> Best of health, till next year!"
   }
