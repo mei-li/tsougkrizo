@@ -15,7 +15,17 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from starlette.websockets import WebSocketDisconnect
 from starlette.exceptions import HTTPException as StarletteHTTPException
+#Changes
+from aioredis.pubsub import Receiver
+from aioredis.abc import AbcChannel
 
+mpsc = Receiver(loop=loop)
+
+redis = await aioredis.create_redis(**kwargs)
+pattern = await redis.psubscribe("SOME_*")
+
+
+###############################
 app = FastAPI()
 sentry_sdk.init(os.environ.get('SENTRY_DSN'))
 
@@ -97,6 +107,8 @@ class GameManager:
     def save_results(self, game_id, results):
         game_id = str(game_id)
         self._results[game_id] = results
+        #Changes 
+        
 
     def get_results_for_host(self, game_id):
         game_id = str(game_id)
