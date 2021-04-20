@@ -12,6 +12,7 @@ import sentry_sdk
 from enum import Enum
 from fastapi import FastAPI, WebSocket, Request
 from fastapi.responses import HTMLResponse, RedirectResponse
+from fastapi.exceptions import RequestValidationError
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from starlette.websockets import WebSocketDisconnect
@@ -61,6 +62,7 @@ class GameError(Exception):
 
 
 @app.exception_handler(StarletteHTTPException)
+@app.exception_handler(RequestValidationError)
 async def http_exception_handler(request, exc):
     locale = get_locale(request)
     translation = translations.get(locale, Locale.default)
@@ -68,7 +70,7 @@ async def http_exception_handler(request, exc):
     return templates.TemplateResponse(
         "error.html.jinja2",
         {'request': request, **translation},
-        status_code=exc.status_code)
+        status_code=exc.status_code if hasattr(exc, 'status_code') else 404)
 
 
 @app.exception_handler(Exception)
