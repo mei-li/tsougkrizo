@@ -3,18 +3,19 @@ import json
 import contextlib
 import uvicorn
 from cachetools import TTLCache
-from contextlib import suppress
 from random import choices
 from uuid import UUID, uuid4
 
 import sentry_sdk
 
 from fastapi import FastAPI, WebSocket, Request
-from fastapi.responses import HTMLResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from starlette.websockets import WebSocketDisconnect
 from starlette.exceptions import HTTPException as StarletteHTTPException
+
+import ormar
+from persistence import Game, create_game
 
 app = FastAPI()
 sentry_sdk.init(os.environ.get('SENTRY_DSN'))
@@ -74,21 +75,23 @@ async def catch_all_exception_handler(request, exc):
 
 class GameManager:
     _games = {}
+    _websockets = {}
     _results = TTLCache(10_000, 24 * 60 * 60)
 
-    def gen_game_id(self):
-        return str(uuid4())
-
-    def get_game(self, game_id):
+    async def get_game(self, game_id):
         game_id = str(game_id)
         game = None
-        with contextlib.suppress(KeyError):
-            game = self._games[game_id]
+        # TODO: test with a non existent game
+        with contextlib.suppress(ormar.exceptions.NoMatch):
+            game = await Game.objects.get(uuid=UUID(game_id))
+
         return game
 
-    def set_game(self, game_id, data):
-        game_id = str(game_id)
-        self._games[game_id] = data
+    async def update_game(self, game, **kwargs):
+        if game:
+            if 'websocket' in kwargs:
+                self._websocket[game.uuid] = kwargs.pop('websocket')
+            await game.update(**kwargs)
 
     def remove_game(self, game_id):
         game_id = str(game_id)
@@ -97,10 +100,6 @@ class GameManager:
     def save_results(self, game_id, results):
         game_id = str(game_id)
         self._results[game_id] = results
-
-    def get_results_for_host(self, game_id):
-        game_id = str(game_id)
-        return self._results.get(game_id)
 
     def get_results_for_player(self, game_id):
         game_id = str(game_id)
@@ -119,7 +118,8 @@ game_manager = GameManager()
 
 @app.get("/")
 async def host(request: Request):
-    game_id = game_manager.gen_game_id()
+    game_id = str(uuid4())
+
     ws_url = request.url_for("websocket_host", game_id=game_id)
     return templates.TemplateResponse("player.html.jinja2", {
         "request": request, "ws_url": ws_url, "is_host": "true"})
@@ -127,7 +127,7 @@ async def host(request: Request):
 
 @app.get("/{game_id}/join")
 async def join(request: Request, game_id: UUID):
-    game = game_manager.get_game(game_id)
+    game = await game_manager.get_game(game_id)
     results = game_manager.get_results_for_player(game_id)
     error = ''
     if not game and not results:
@@ -146,23 +146,20 @@ async def join(request: Request, game_id: UUID):
 @app.websocket("/ws/{game_id}")
 async def websocket_host(websocket: WebSocket, game_id: UUID):
     await websocket.accept()
-    game = game_manager.get_game(game_id)
-    results = game_manager.get_results_for_host(game_id)
-    if not game and not results:
-        game = {
-            'websocket': websocket,
-            'username': None,
-            'outcome': None
-        }
+    print("In player 1", 'no game_id', flush=True)
+    game = await game_manager.get_game(game_id)
+    print("In player 1", game, flush=True)
+    if not game:
         data = await websocket.receive_json()
-        game['username'] = read_username(data)
-        print("In player 1", game_id, game['username'], flush=True)
-        game_manager.set_game(game_id, game)
+        host = read_username(data)
+        game = await create_game(uuid=game_id, host=host)
+        print("In player 1", game_id, host, flush=True)
+        await game_manager.update_game(game, websocket=websocket)
         await websocket.send_json({
-            'invitation_url': websocket.url_for('join', game_id=game_id)
+            'invitation_url': websocket.url_for('join', game_id=game.uuid)
         })
-    elif results:
-        await websocket.send_json(results)
+    elif game.player:
+        await websocket.send_json({'outcome': {'back': game.host_back, 'front': game.host_front}, 'host': game.host, 'opponent': game.player})
         return
 
     # To keep socket alive until player2 joins
@@ -174,7 +171,7 @@ async def websocket_host(websocket: WebSocket, game_id: UUID):
 async def websocket_join(websocket: WebSocket, game_id: UUID):
     await websocket.accept()
     # Verify game is still on
-    game = game_manager.get_game(game_id)
+    game = await game_manager.get_game(game_id)
     if not game or game['outcome']:  # invalid game or already played
         await websocket.send_json({'error': ErrorCode.invalid_game})
         await websocket.close()
