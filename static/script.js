@@ -65,8 +65,16 @@ $('.lang-switch').click(function(e) {
 
 $( document ).ready(function() {
   
-  $.i18n().load(translations).done( function() { update_texts(); } );
+  $.i18n().load(translations).done( function() {
+    update_texts();
+    showPage();
+   } );
   
+
+});
+
+function showPage(){
+
   if (global.result === null) {  // new game
     registerErroHandling();
     registerBaseGame(transitNamePageToInvitePage);
@@ -86,8 +94,7 @@ $( document ).ready(function() {
     registerShare();
     showResultPage();
   }
-
-});
+}
 
 function registerResultInteractivity(){
   buttonnewinvitation.addEventListener('click', function (e) {
@@ -423,7 +430,6 @@ function showResultPage() {
   $(".results-card:first .tag-line").html($.i18n('losing-egg', global.username));
  
   if ((global.last_eggroll.front) && (global.last_eggroll.back)){
-  
     $(".results-card:first .tag-line").html($.i18n('winning-egg', global.username));   
 
     $(".results-card:first img.egg-cracked-tip").remove();
