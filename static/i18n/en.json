@@ -18,5 +18,9 @@
     "send-link": "Copy & send the following link",
     "winning-egg": "Your egg <span class=\"accent\"> $1 </span> won! Keep winning always!",
     "losing-egg": "Oh no, your egg was owned <span class=\"accent\"> $1 </span>! <br> No worries, health comes first!",
-    "draw-egg": "Your egg <span class=\"accent\"> $1 </span> broke, but mine as well! <br> Best of health, till next year!"
+    "draw-egg": "Your egg <span class=\"accent\"> $1 </span> broke, but mine as well! <br> Best of health, till next year!",
+    "meta_description": "Egg Tapping",
+    "meta_site_name": "Egg Tapping",
+    "meta_title": "Tap Easter Eggs with your loved ones in distance!",
+    "meta_ogdescription": "Tap Easter Egg is a web app for all of us that do not have the chance to spend these days with our loved ones !"
   }
