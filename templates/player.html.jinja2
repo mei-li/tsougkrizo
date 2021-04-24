@@ -10,7 +10,7 @@
 			<img id="tsougkrisma-logo" width="100%" src="{{ url_for('static', path='/logo_lowres.svg') }} ">
 		</div>
     	<div class="content">
-    		<p class="instructions " data-i18n="[html]instructions"></p>
+    		<p class="instructions" data-i18n="[html]instructions"></p>
     		<div class="c-formContainer">
 				<form class="c-form nameform" autocomplete="off" action="">
 			    	<input autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"id="nickname" class="c-form__input" placeholder="{{ name }}" type="text" pattern="[A-Za-zΑ-Ωα-ω0-9άέίϊΐόήώύϋΰΆΈΊΪΌΉΏΎΫς\s]{1,30}$" required>
@@ -71,7 +71,7 @@
 		<div class="content">
 			<p class="instructions">error page</p>
 			<div id="button-reset" class="c-fake-button">
-				<p>Αρχική Σελίδα</p>
+				<p> {{home_page}} </p> 
 			</div>
 		</div>
 	</div>
@@ -83,7 +83,7 @@
 			</header>
 			<div class="link">
 				<div class="export-url"><input type="text" id="copied-url"></div>
-				<button class="copy-link">Αντιγραφή</button>
+				<button class="copy-link"> {{copy}} </button> 
 			</div>
 		</div>
 

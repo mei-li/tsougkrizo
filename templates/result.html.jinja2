@@ -1,20 +1,21 @@
 {% extends "base.html.jinja2" %}
 
-{% block switchmmeta %}
+{% block switchmeta %}
     <meta charset="utf-8">
-    <title>Τσουγκρίζω Πασχαλινό Αυγό - Αποτελέσματα</title>
-    <meta name="description" content="Τα αποτελέσματα του τσουγκρίσματος μου">
+	<title>{{title_results}}</title>
+    <meta name="description" content="{{my_tap_results}}">
     <meta property="og:site" content="{{ url_for('host') }}"> <!-- website link -->
 
     <!-- OG Meta Tags to improve the way the post looks when you share the page on LinkedIn, Facebook, Google+ -->
-    <meta property="og:site_name" content="Τσούγκρισμα"> <!-- website name -->
-	<meta property="og:title" content="Αποτελέσματα Τσουγκρίσματος"> <!-- title shown in the actual shared post -->
-    <meta property="og:description" content="Μάθε ποιό αυγό έσπασε και ποιό επικράτησε στο τσούγκρισμα!"> <!-- description shown in the actual shared post -->
-    <meta property="og:image" content="{{ url_for('static', path='/ogimage.jpg') }}">
+    
+	<meta property="og:site_name" content="{{meta_site_name}}"> <!-- website name -->
+	<meta property="og:title" content="{{tap_results}}"> <!-- title shown in the actual shared post -->
+    <meta property="og:description" content="{{description_results}}"> <!-- description shown in the actual shared post -->
+	<meta property="og:image" content="{{ url_for('static', path='/ogimage.jpg') }}">
     
 	<meta property="og:url" content="{{ url_for('host') }}"> <!-- where do you want your post to link to -->
     <meta property="og:type" content="article">
-{% endblock %}*
+{% endblock %}
 
 {% block content %}
 	<div id="page-results" class="container clean-grid">
@@ -34,7 +35,7 @@
 			</div>
 			<div class="horizontal-buttons">
 				<div id="button-new-invitation" class="c-fake-button">
-					<p>Νεα Αναμέτρηση</p>
+					<p> {{new_game}} </p>
 				</div>
 				<div id="button-play-link-results" class="c-fake-button">
 					<p><svg><use href="#play-link-icon"></use></svg></p>
@@ -45,12 +46,12 @@
 	<div class="play-link-container" style="">
 		<div class="play-link-dialog">
 			<header>
-				<h3 class="dialog-title">Κάντε αντιγραφή και στείλτε τον παρακάτω σύνδεσμο</h3>
+				<h3 class="dialog-title"> {{share}} </h3>
 				<button class="close-button"><svg><use href="#close"></use></svg></button>
 			</header>
 			<div class="link">
 				<div class="export-url"><input type="text" id="copied-url"></div>
-				<button class="copy-link">Αντιγραφή</button>
+				<button class="copy-link"> {{copy}} </button>
 			</div>
 		</div>
 

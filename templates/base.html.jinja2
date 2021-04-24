@@ -27,12 +27,12 @@
     <meta charset="utf-8">
     <title>{{title}}</title>
     <meta name="description" content="{{meta_description}}">
-    {# <meta name="description" content="Τσούγκρισμα αυγών"> #}
+
     <!-- OG Meta Tags to improve the way the post looks when you share the page on LinkedIn, Facebook, Google+ -->
     <meta property="og:site" content="{{ url_for('host') }}"> <!-- website link -->
     
     <meta property="og:site_name" content="{{meta_site_name}}"> <!-- website name -->
-    <meta property="og:title" content="{{meta_title}}"> <!-- title shown in the actual shared post -->
+    <meta property="og:title" content="{{ meta_title | safe }}"> <!-- title shown in the actual shared post -->
     <meta property="og:description" content="{{meta_ogdescription}}"> <!-- description shown in the actual shared post -->
     <meta property="og:image" content="{{ url_for('static', path='/ogimage.jpg') }}">
 
