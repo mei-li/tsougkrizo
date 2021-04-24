@@ -1,3 +1,4 @@
+import os
 from typing import Optional
 
 import databases
@@ -5,9 +6,13 @@ import databases
 import ormar
 import sqlalchemy
 
-DATABASE_URL = "sqlite:///db.sqlite"
-database = databases.Database(DATABASE_URL)
+DATABASE_URL = os.environ.get('DATABASE_URL', "sqlite:///db.sqlite")
 metadata = sqlalchemy.MetaData()
+database = databases.Database(DATABASE_URL)
+engine = sqlalchemy.create_engine(DATABASE_URL)
+
+
+print(DATABASE_URL)
 
 
 class BaseMeta(ormar.ModelMeta):
@@ -30,12 +35,8 @@ async def create_game(uuid, host):
     return await Game.objects.create(uuid=uuid, host=host)
 
 
-# not being used at this moment
-async def update_game(uuid, player=None, front=None, back=None):
-    await Game.objects.get(uuid=uuid).update(player=player, host_front=front, host_back=back)
+def create_db():
+    metadata.create_all(engine)
 
-
-# Configuration. Do it at setup time
-engine = sqlalchemy.create_engine(DATABASE_URL)
-metadata.drop_all(engine)
-metadata.create_all(engine)
+def drop_db():
+    metadata.drop_all(engine)
