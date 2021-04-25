@@ -99,12 +99,11 @@ function showPage(){
 function registerResultInteractivity(){
   buttonnewinvitation.addEventListener('click', function (e) {
     gaEvent("play_again");
-    window.location = "/";
+    window.location = "/" + $.i18n().locale + "/";
   });
   buttonshareresults.addEventListener('click', function (e) {
     shareResult();
   });
-
 }
 
 function shareResult()
