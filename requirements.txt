@@ -4,3 +4,5 @@ Jinja2==2.11.3
 aiofiles==0.4.0
 sentry_sdk==0.14.3
 cachetools==4.1.0
+ormar[postgresql]==0.10.4
+aiosqlite==0.17.0
