@@ -41,6 +41,9 @@ When you have this Python version, follow the steps below to run the application
 # install requirements - needed when new dependencies are in requirements.txt
 > pip install -r requirements.txt
 
+# initialise local database
+> python create_db.py
+
 # run application
 > uvicorn main:app --reload
 ```
