@@ -15,9 +15,10 @@ from starlette.websockets import WebSocketDisconnect
 from starlette.exceptions import HTTPException as StarletteHTTPException
 
 import ormar
-from persistence import Game, create_game
+from persistence import Game, create_game, database
 
 app = FastAPI()
+app.state.database = database
 sentry_sdk.init(os.environ.get('SENTRY_DSN'))
 
 
@@ -98,11 +99,6 @@ class GameManager:
 
 game_manager = GameManager()
 
-@app.get("/demo_ormar_issue")
-async def host(request: Request):
-    game_id = uuid4()
-    await Game.objects.get(uuid=game_id)
-    return "Worked"
 
 @app.get("/")
 async def host(request: Request):
@@ -215,6 +211,20 @@ def read_username(data):
         return data['username']
     except KeyError:
         raise Exception('Invalid message in websocket')
+
+
+@app.on_event("startup")
+async def startup() -> None:
+    database_ = app.state.database
+    if not database_.is_connected:
+        await database_.connect()
+
+
+@app.on_event("shutdown")
+async def shutdown() -> None:
+    database_ = app.state.database
+    if database_.is_connected:
+        await database_.disconnect()
 
 
 if __name__ == "__main__":
