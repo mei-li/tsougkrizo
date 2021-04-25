@@ -57,6 +57,11 @@ const copyButton = document.querySelector('.copy-link');
 var shareDialogCopyEventListener;
 
 var update_texts = function() { $('body').i18n() };
+$('.lang-switch').click(function(e) {
+  url = window.location.href;
+  url = url.replace('/' + $.i18n().locale + '/', '/' + $(this).data('locale') + '/');
+  window.location.href = url;
+});
 
 $( document ).ready(function() {
   
