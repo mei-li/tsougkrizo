@@ -1,0 +1,43 @@
+{
+    "@metadata": {
+      "authors": [
+        "mei-li", "manos"
+      ],
+      "last-updated": "2021-04-25",
+      "locale": "en"
+    },
+    "instructions": "Welcome! <br/> Type your nickname",
+    "easter-wish": "Christ is risen!",
+    "send-invite-message": "Send an invitation to a friend to tap your eggs together!",
+    "send": "Send  <svg><use href=\"#play-link-icon\"></use></svg>",
+    "resend": "Resend <svg><use href=\"#play-link-icon\"></use></svg>",
+    "invitation": "Invitation",
+    "invalid_link": "This link is not valid anymore",
+    "teaser_draw": "Both the eggs were cracked but it was fun!",
+    "teaser_winner": "There was an unbeatable winner in the egg tapping battle! Who that is? Find out for yourself !",
+    "invitation_title": "Invitation to tap easter eggs",
+    "invitation_text": " $1 invited you to tap easter eggs! Click on the link to respond.",
+    "connecting_with": "Connecting with <b> $1 </b>",
+    "new-confrontation": "New Game",
+    "title": "Tap easter egg",
+    "name": "Name",
+    "waiting-egg-fellow": "Waiting connection, keep this window open.",
+    "resend-invitation-note": "You can resend the invitation pressing the following button. You can send the invitation only to one person",
+    "send-link": "Copy & send the following link",
+    "winning-egg": "Your egg <span class=\"accent\"> $1 </span> won! Keep winning always!",
+    "losing-egg": "Oh no, your egg was owned <span class=\"accent\"> $1 </span>! <br> No worries, health comes first!",
+    "draw-egg": "Your egg <span class=\"accent\"> $1 </span> broke, but mine as well! <br> Best of health, till next year!",
+    "meta_description": "Egg Tapping",
+    "meta_site_name": "Egg Tapping",
+    "meta_title": "Tap Easter Eggs with your loved ones in distance!",
+    "meta_ogdescription": "Tap Easter Egg is a web app for all of us that do not have the chance to spend these days with our loved ones !",
+    "error_msg": "Something unexpected happened...",
+    "title_results": "Tap easter egg - Results",
+    "tap_results": "Egg tapping results",
+    "description_results": "Find out which egg broke and which won the egg tapping! ",
+    "new_game": "New game",
+    "home_page": "Home Page",
+    "my_tap_results": "My egg tapping results",
+    "share": "Copy and send the following link",
+    "copy": "Copy"
+  }

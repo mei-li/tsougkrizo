@@ -8,7 +8,10 @@ from uuid import UUID, uuid4
 
 import sentry_sdk
 
+from enum import Enum
 from fastapi import FastAPI, WebSocket, Request
+from fastapi.responses import RedirectResponse
+from fastapi.exceptions import RequestValidationError
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from starlette.websockets import WebSocketDisconnect
@@ -26,6 +29,33 @@ app.mount("/static", StaticFiles(directory="static"), name="static")
 templates = Jinja2Templates(directory="templates")
 
 
+def get_translations():
+    locales = ['en', 'el']
+    translations = {}
+
+    for locale in locales:
+        with open(f'static/i18n/{locale}.json', encoding='utf-8') as f:
+            translations[locale] = json.load(f)
+        translations[locale]["locale"] = locale
+
+    return translations
+
+
+translations = get_translations()
+
+
+def get_locale(request):
+    # TODO get locale from url if present
+    # TODO get locale from geolocate
+    return Locale.default
+
+
+class Locale(str, Enum):
+    greek = "el"
+    english = "en"
+    default = "en"
+
+
 class ErrorCode:
     invalid_game = 'INVALID_GAME'
 
@@ -35,11 +65,15 @@ class GameError(Exception):
 
 
 @app.exception_handler(StarletteHTTPException)
+@app.exception_handler(RequestValidationError)
 async def http_exception_handler(request, exc):
+    locale = get_locale(request)
+    translation = translations.get(locale, Locale.default)
+
     return templates.TemplateResponse(
-        "error.html.jinja2", {
-        "request": request,
-        }, status_code=exc.status_code)
+        "error.html.jinja2",
+        {'request': request, **translation},
+        status_code=exc.status_code if hasattr(exc, 'status_code') else 404)
 
 
 @app.exception_handler(Exception)
@@ -102,15 +136,25 @@ game_manager = GameManager()
 
 @app.get("/")
 async def host(request: Request):
+    # TODO load the language selection page
+    locale = get_locale(request)
+    return RedirectResponse(url=f'/{locale}')
+
+
+@app.get("/{locale}/")
+async def host(request: Request, locale: Locale):
+    translation = translations.get(locale, Locale.default)
     game_id = str(uuid4())
 
-    ws_url = request.url_for("websocket_host", game_id=game_id)
+    ws_url = request.url_for("websocket_host", game_id=game_id, locale=locale.value)
     return templates.TemplateResponse("player.html.jinja2", {
-        "request": request, "ws_url": ws_url, "is_host": "true"})
+        "request": request, "ws_url": ws_url, "is_host": "true", 
+        **translation})
 
 
-@app.get("/{game_id}/join")
-async def join(request: Request, game_id: UUID):
+@app.get("/{locale}/{game_id}/join")
+async def join(request: Request, game_id: UUID, locale: Locale):
+    translation = translations.get(locale, Locale.default)
     game = await game_manager.get_game(game_id)
     error = ''
     if not game:
@@ -119,23 +163,24 @@ async def join(request: Request, game_id: UUID):
     if game and game.player: # game is already played
         # send results from player/opponent perspective
         results = {
-            'outcome': {'back': not game.host_back, 'front': not game.host_front}, 
-            'host': game.host, 
+            'outcome': {'back': not game.host_back, 'front': not game.host_front},
+            'host': game.host,
             'opponent': game.player
             }
     template = "player.html.jinja2" if not results else "result.html.jinja2"
     return templates.TemplateResponse(template, {
         "request": request,
-        "ws_url": request.url_for("websocket_join", game_id=game_id),
+        "ws_url": request.url_for("websocket_join", game_id=game_id, locale=locale.value),
         "is_host": "false",
         "opponent_nickname": game.host if game else '',
         "error": error,
         "result": json.dumps(results) if results else "",
+        **translation
         })
 
 
-@app.websocket("/ws/{game_id}")
-async def websocket_host(websocket: WebSocket, game_id: UUID):
+@app.websocket("/ws/{locale}/{game_id}")
+async def websocket_host(websocket: WebSocket, game_id: UUID, locale: Locale):
     await websocket.accept()
     game = await game_manager.get_game(game_id)
     print("In player 1", game, flush=True)
@@ -145,19 +190,19 @@ async def websocket_host(websocket: WebSocket, game_id: UUID):
         game = await create_game(uuid=game_id, host=host)
         print("In player 1", game_id, host, flush=True)
         await game_manager.update_game(game, websocket=websocket)
-    
+
     if game.player:  # game is already played
         # send result from host perspective
         await websocket.send_json({
-            'outcome': {'back': game.host_back, 'front': game.host_front}, 
-            'host': game.host, 
+            'outcome': {'back': game.host_back, 'front': game.host_front},
+            'host': game.host,
             'opponent': game.player
             })
         return
-    
+
     # send the share url
     await websocket.send_json({
-            'invitation_url': websocket.url_for('join', game_id=game.uuid)
+            'invitation_url': websocket.url_for('join', game_id=game.uuid, locale=locale.value)
         })
 
     # To keep socket alive until player2 joins
@@ -165,7 +210,7 @@ async def websocket_host(websocket: WebSocket, game_id: UUID):
         data = await websocket.receive_json()
 
 
-@app.websocket("/ws/{game_id}/join")
+@app.websocket("/ws/{locale}/{game_id}/join")
 async def websocket_join(websocket: WebSocket, game_id: UUID):
     await websocket.accept()
     # Verify game is still on
@@ -181,7 +226,7 @@ async def websocket_join(websocket: WebSocket, game_id: UUID):
     username = read_username(data)
     back, front = calculate_outcome()
     await game_manager.update_game(game, player=username, host_front=front, host_back=back)
-    
+
     result_for_player = {'back': not back, 'front': not front}
 
     await websocket.send_json({'outcome': result_for_player, 'opponent': game.host})
@@ -193,8 +238,8 @@ async def inform_host(game):
     if websocket:
         with contextlib.suppress(RuntimeError):
             results = {
-                'outcome': {'back': game.host_back, 'front': game.host_front}, 
-                'host': game.host, 
+                'outcome': {'back': game.host_back, 'front': game.host_front},
+                'host': game.host,
                 'opponent': game.player
             }
             await websocket.send_json(results)

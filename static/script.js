@@ -56,9 +56,24 @@ const closeButton = document.querySelector('.close-button');
 const copyButton = document.querySelector('.copy-link');
 var shareDialogCopyEventListener;
 
-
+var update_texts = function() { $('body').i18n() };
+$('.lang-switch').click(function(e) {
+  url = window.location.href;
+  url = url.replace('/' + $.i18n().locale + '/', '/' + $(this).data('locale') + '/');
+  window.location.href = url;
+});
 
 $( document ).ready(function() {
+  
+  $.i18n().load(translations).done( function() {
+    update_texts();
+    showPage();
+   } );
+  
+
+});
+
+function showPage(){
 
   if (global.result === null) {  // new game
     registerErroHandling();
@@ -79,18 +94,16 @@ $( document ).ready(function() {
     registerShare();
     showResultPage();
   }
-
-});
+}
 
 function registerResultInteractivity(){
   buttonnewinvitation.addEventListener('click', function (e) {
     gaEvent("play_again");
-    window.location = "/";
+    window.location = "/" + $.i18n().locale + "/";
   });
   buttonshareresults.addEventListener('click', function (e) {
     shareResult();
   });
-
 }
 
 function shareResult()
@@ -98,10 +111,10 @@ function shareResult()
   var teasertext;
   if (global.last_eggroll.front != global.last_eggroll.back){
     //both have cracked eggs
-    teasertext = "Μπορεί όλα τα αυγά να σπάσανε αλλά εμείς το διασκεδάσαμε!";
+    teasertext = $.i18n('teaser_draw');
   } else {
     //one is winner and one is loser!
-    teasertext = "Στο τσούγκρισμα υπήρξε αξεπέραστος πρωταθλητής! Ποιος να ναι αυτός; Αυτό, ΕΣΥ θα πρέπει να το βρείς!";
+    teasertext = $.i18n('teaser_winner');
   }
   shareLink(
     global.username + ' VS ' + global.opponent_nickname +";",
@@ -280,10 +293,12 @@ function registerInvitation(){
 
 function displayShare(shareablelink){
   shareLink(
-    'Πρόσκληση για Τσούγκρισμα',
-    'Ο/η ' + global.username + ' σε προσκάλεσε να τσουγκρίσετε αυγά! Πάτησε τον σύνδεσμο για να ανταποκριθείς. ',
-    shareablelink,
-    shareDialogCloseEventListener
+
+  $.i18n('invitation_title'),
+  $.i18n('invitation_text', global.username),
+
+  shareablelink,
+  shareDialogCloseEventListener
   );
 }
 
@@ -306,9 +321,14 @@ function shareLink(title, text, link, callback){
   }
 }
 
+function hideLanguageButton() {
+  $('#lang-switch').hide();
+}
+
 function transitNamePageToInvitePage() {
   global.username = $('#nickname')[0].value;
   gaEvent("name_set");
+  hideLanguageButton();
   //initialize waiting room
   showInvitePage();
 
@@ -328,8 +348,8 @@ function showInvitePage()
   if (global.username == null) {console.log("error initing waiting room. Why is username unset?");}
   if (global.is_host) {
     $('#button-invitation').addClass('active');
-    $("#page-waiting-room .instructions").html("Στείλε μια πρόσκληση σε ένα αγαπημένο σου πρόσωπο και τσουγκρίστε παρέα!");
-    $('#button-invitation p').html("Αποστολή <svg><use href=\"#play-link-icon\"></use></svg>");
+    $("#page-waiting-room .instructions").html($.i18n('send-invite-message'));
+    $('#button-invitation p').html($.i18n('send'));
   } else{
     console.log('init waiting room here is the friend ')
     $('#button-invitation').removeClass('active');
@@ -340,14 +360,15 @@ function showInvitePage()
 function showWaitingPage()
 {
   if (global.is_host){
-    $("#button-invitation p").html("Επαναποστολή <svg><use href=\"#play-link-icon\"></use></svg>");
-    $("#page-waiting-room .instructions").html("Αναμονή σύνδεσης, κράτησε αυτό το παράθυρο ανοιχτό. </p>");
-    $("#page-waiting-room .notes").html("<p> Μπορείς να ξαναστείλεις την πρόσκληση πατώντας το παρακάτω πλήκτρο. Κάθε πρόσκληση μπορείς να την στείλεις σε ένα μόναχα άτομο</p>");
+    $("#button-invitation p").html($.i18n('resend'));
+    $("#page-waiting-room .instructions").html($.i18n('waiting-egg-fellow'));
+    $("#page-waiting-room .notes").html($.i18n('resend-invitation-note'));
+  
   }else{
     console.log('friends has arrived ')
     connect();
-    $("#button-invitation p").html("Πρόσκληση");
-    $("#page-waiting-room .instructions").html("Γίνεται σύνδεση με τον <b>"+ global.opponent_nickname + "</b>");
+    $("#button-invitation p").html($.i18n('invitation'));
+    $("#page-waiting-room .instructions").html($.i18n('connecting_with', global.opponent_nickname));
   }
   $('#loading-icon').addClass('animated fadeIn faster');
   $('#loading-icon').addClass('active');
@@ -412,9 +433,11 @@ function showResultPage() {
   $('#page-results .template:last').removeClass("template");
   $(".results-card:first .versus-title").html(global.username + "<span class=\"subnote inactive\">(Εγω)</span> VS " +global.opponent_nickname);
 
-  $(".results-card:first .tag-line").html("Πωπω, κατατροπώθηκε το αυγό σου <span class=\"accent\">" + global.username + "</span>! <br> Δεν πειράζει όμως, πάντα με υγεία!");
+  $(".results-card:first .tag-line").html($.i18n('losing-egg', global.username));
+ 
   if ((global.last_eggroll.front) && (global.last_eggroll.back)){
-    $(".results-card:first .tag-line").html("Το αυγό σου <span class=\"accent\">" + global.username + "</span> νίκησε! Πάντα τέτοια!");  // 
+    $(".results-card:first .tag-line").html($.i18n('winning-egg', global.username));   
+
     $(".results-card:first img.egg-cracked-tip").remove();
     $(".results-card:first img.egg-cracked-butt").remove();
     $(".results-card:first img.egg-cracked-both").remove();
@@ -422,12 +445,12 @@ function showResultPage() {
     $(".results-card:first img.egg-champion").remove();
     $(".results-card:first img.egg-cracked-butt").remove();
     $(".results-card:first img.egg-cracked-both").remove();
-    $(".results-card:first .tag-line").html("Το αυγό σου <span class=\"accent\">" + global.username + "</span> έσπασε, αλλά έσπασε και το δικό μου! <br> Με υγεία και του χρόνου!");
+    $(".results-card:first .tag-line").html($.i18n('draw-egg', global.username));
   } else if (global.last_eggroll.front){
     $(".results-card:first img.egg-champion").remove();
     $(".results-card:first img.egg-cracked-tip").remove();
     $(".results-card:first img.egg-cracked-both").remove();
-    $(".results-card:first .tag-line").html("Το αυγό σου <span class=\"accent\">" + global.username + "</span> έσπασε, αλλά έσπασε και το δικό μου! <br> Με υγεία και του χρόνου!");
+    $(".results-card:first .tag-line").html($.i18n('draw-egg', global.username));
   } else {
     $(".results-card:first img.egg-champion").remove();
     $(".results-card:first img.egg-cracked-tip").remove();
@@ -454,7 +477,8 @@ function init_error_page(){
   $previous_page.addClass('animated fadeOut faster');
   $('#page-error').addClass('animated fadeIn slow');
   $('#page-error').addClass('active');
-  $("#page-error .instructions").html("Αυτός ο σύνδεσμος δεν είναι έγκυρος πλέον");
+  $("#page-error .instructions").html($.i18n('invalid_link'));
+  // $("#page-error .instructions").html("Αυτός ο σύνδεσμος δεν είναι έγκυρος πλέον");  ΠΩΣ ΤΟ ΤΕΣΤΑΡΩ??
   setTimeout(function(){
     $previous_page.removeClass('active');
       $previous_page.removeClass('animated fadeOut faster');
