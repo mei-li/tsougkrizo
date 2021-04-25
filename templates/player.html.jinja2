@@ -1,8 +1,10 @@
 {% extends "base.html.jinja2" %}
 
 {% block content %}
-	<a href="#" class="lang-switch" data-locale="en">English</a> |
-    <a href="#" class="lang-switch" data-locale="el">Ελληνικά</a>
+<div id="lang-switch">
+	<a href="/en" class="lang-switch" data-locale="en">English</a> |
+    <a href="/el" class="lang-switch" data-locale="el">Ελληνικά</a>
+</div>
 
 <!-- page content -->
     <div id="page-nickname" class="container active">

@@ -57,11 +57,6 @@ const copyButton = document.querySelector('.copy-link');
 var shareDialogCopyEventListener;
 
 var update_texts = function() { $('body').i18n() };
-$('.lang-switch').click(function(e) {
-  e.preventDefault();
-  $.i18n().locale = $(this).data('locale');
-  update_texts();
-});
 
 $( document ).ready(function() {
   
@@ -322,9 +317,14 @@ function shareLink(title, text, link, callback){
   }
 }
 
+function hideLanguageButton() {
+  $('#lang-switch').hide();
+}
+
 function transitNamePageToInvitePage() {
   global.username = $('#nickname')[0].value;
   gaEvent("name_set");
+  hideLanguageButton();
   //initialize waiting room
   showInvitePage();
 

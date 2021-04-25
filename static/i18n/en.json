@@ -1,11 +1,10 @@
 {
     "@metadata": {
       "authors": [
-        "mei-li"
+        "mei-li", "manos"
       ],
-      "last-updated": "2021-03-29",
-      "locale": "en",
-      "message-documentation": "qqq"
+      "last-updated": "2021-04-25",
+      "locale": "en"
     },
     "instructions": "Welcome! <br/> Type your nickname",
     "easter-wish": "Christ is risen!",

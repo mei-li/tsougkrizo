@@ -1,11 +1,10 @@
 {
     "@metadata": {
       "authors": [
-        "mei-li"
+        "mei-li", "manos"
       ],
-      "last-updated": "2021-03-29",
-      "locale": "el",
-      "message-documentation": "qqq"
+      "last-updated": "2021-04-25",
+      "locale": "el"
     },
     "instructions": "Καλωσήρθες! <br/> Πως να σε συστήσω;",
     "easter-wish": "Χριστός Ανέστη!",
