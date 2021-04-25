@@ -1,5 +1,10 @@
 {
-    "scripts": {
-      "postdeploy": "python create_db.py"
+  "environments": {
+    "review": {
+      "addons": ["heroku-postgresql:hobby-dev"],
+      "scripts": {
+        "postdeploy": "python create_db.py"
+      }
     }
+  } 
 }

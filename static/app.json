@@ -1,5 +1,0 @@
-{
-    "scripts": {
-      "postdeploy": "python create_db.py"
-    }
-  }
