@@ -1,3 +1,14 @@
+{% macro image_url(image_name, ending) -%}
+{% set greek = locale %}
+
+{% if locale == 'el' %}
+{% set image_url = url_for('static', path=image_name + '.' + ending)  %}
+{% else %}
+{% set image_url = url_for('static', path=image_name + '.en.' + ending)  %}
+{% endif %}
+{{ image_url }}
+{%- endmacro %}
+
 <!DOCTYPE html>
 <html lang="{{locale}}">
   <head>
