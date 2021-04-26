@@ -269,6 +269,19 @@ body {
 }*/
 
 
+div#lang-switch>a:-webkit-any-link {
+    color: white;
+    font-weight: 900;
+    text-decoration: none;
+}
+
+
+div#lang-switch {
+    color: white;
+	background: #36786e;
+    padding: 0.3em;
+}
+
 
 #loading-icon {
 	opacity:0;
