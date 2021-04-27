@@ -1,0 +1,43 @@
+{
+    "@metadata": {
+      "authors": [
+        "uros"
+      ],
+      "last-updated": "2021-04-25",
+      "locale": "sr"
+    },
+    "instructions": "Dobro dosli! <br/> Unesite svoje ime/nadimak",
+    "easter-wish": "Hristos vaskrse!",
+    "send-invite-message": "Posaljite poziv prijatelju sa kojim zelite da tucate uskrsnje jaje!",
+    "send": "Posalji  <svg><use href=\"#play-link-icon\"></use></svg>",
+    "resend": "Ponovo posalji <svg><use href=\"#play-link-icon\"></use></svg>",
+    "invitation": "Poziv",
+    "invalid_link": "Ovaj link vise nije vazeci",
+    "teaser_draw": "Oba jaja su polomljena, ali bilo je zabavno!",
+    "teaser_winner": "Postoji nepobedivi pobednik u bitci tucanja jajima! Ko je to? Pogledajte sami!",
+    "invitation_title": "Poziv za tucanje uskrusnjih jaja",
+    "invitation_text": " $1 vas je pozvao na tucanje uskrsnjih jaja! Molim vas kliknite na link da bi prihvatili izazov.",
+    "connecting_with": "Spojite se sa <b> $1 </b>",
+    "new-confrontation": "Nova igra",
+    "title": "Tucanje uskrsnjih jajeta",
+    "name": "Ime",
+    "waiting-egg-fellow": "Cekanje konekcije, molim vas drzite ovaj prozor otvorenim.",
+    "resend-invitation-note": "Mozete da ponovo posaljete poziv pritiskom sledeceg dugmeta. Mozete da posaljete poziv samo jednoj osobi",
+    "send-link": "Kpiraj & posalji sledeci link",
+    "winning-egg": "Vase jaje <span class=\"accent\"> $1 </span> je pobedilo! Nastavite sa pobedjivanjem!",
+    "losing-egg": "Ox, ne, vase jaje je naprslo <span class=\"accent\"> $1 </span>! <br> Bez brige, zdravlje na prvom mestu!",
+    "draw-egg": "Vase jaje <span class=\"accent\"> $1 </span> se polomilo, ali i moje! <br> Puno zdravlja, do sledece godine!",
+    "meta_description": "Tucanje uskrsnjih jaja",
+    "meta_site_name": "Tucanje uskrsnjih jaja",
+    "meta_title": "Tucanje uskrsnjih jaja sa vasim voljenim, na distanci!",
+    "meta_ogdescription": "Tucanje uskrsnjih jaja je web aplikacija za sve nas koji nemamo sanse da provedemo ove dane sa nasim voljenim!",
+    "error_msg": "Nesto neocekivano se dogodilo...",
+    "title_results": "Tucanje uskrsnjih jajeta - Rezultati",
+    "tap_results": "Rezultati tucanja uskrsnjih jajeta",
+    "description_results": "Saznajte cije jaje se poomilo i ko je dobio u takmicenju tucanja uskrsnjih jajeta! ",
+    "new_game": "Nova igra",
+    "home_page": "Home strana",
+    "my_tap_results": "Moji rezultati tucanja uskrsnjih jajeta",
+    "share": "Kopiraj i posalji sledeci link",
+    "copy": "Kopiraj"
+  }
