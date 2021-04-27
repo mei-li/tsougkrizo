@@ -22,9 +22,11 @@
 				</form>
 			</div>
     	</div>
+		{% if locale == 'el'%}
 		<div class="titroo-banner">
 			<a href="https://www.titroo.com/" target="_blank "><img src="{{ url_for('static', path='/banner01.jpg') }} "></a>
 		</div>
+		{% endif %}
     </div>
     <div id="page-waiting-room" class="container">
     	<div class="content">
