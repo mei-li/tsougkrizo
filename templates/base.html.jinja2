@@ -45,7 +45,7 @@
     <meta property="og:site_name" content="{{meta_site_name}}"> <!-- website name -->
     <meta property="og:title" content="{{ meta_title | safe }}"> <!-- title shown in the actual shared post -->
     <meta property="og:description" content="{{meta_ogdescription}}"> <!-- description shown in the actual shared post -->
-    <meta property="og:image" content="{{ url_for('static', path='/ogimage.jpg') }}">
+    <meta property="og:image" content="{{ image_url('/ogimage', 'jpg') }}">
 
     <meta property="og:url" content="{{ url_for('host') }}"> <!-- where do you want your post to link to -->
     <meta property="og:type" content="article">
