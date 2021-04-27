@@ -11,7 +11,7 @@
 	<meta property="og:site_name" content="{{meta_site_name}}"> <!-- website name -->
 	<meta property="og:title" content="{{tap_results}}"> <!-- title shown in the actual shared post -->
     <meta property="og:description" content="{{description_results}}"> <!-- description shown in the actual shared post -->
-	<meta property="og:image" content="{{ url_for('static', path='/ogimage.jpg') }}">
+	<meta property="og:image" content="{{ image_url('/ogimage', 'jpg') }}">
     
 	<meta property="og:url" content="{{ url_for('host') }}"> <!-- where do you want your post to link to -->
     <meta property="og:type" content="article">
@@ -20,17 +20,17 @@
 {% block content %}
 	<div id="page-results" class="container clean-grid">
     	<div id="tsougkrizo-watermark" class="logo">
-			<img id="tsougkrisma-logo" width="100%" src="{{ url_for('static', path='/logo_watermark.svg') }} ">
+			<img id="tsougkrisma-logo" width="100%" src="{{ image_url('/logo_watermark', 'svg') }} ">
 		</div>
 		<div class="content">
     		<div id="cards-container">
 				<div style="display:none;" class="template">
 					<p class="versus-title"></p>
 					<p class="tag-line"></p>
-					<img class="egg-result egg-champion" width="280px" src="{{ url_for('static', path='/egg_champion_s.png') }} ">
-					<img class="egg-result egg-cracked-tip" width="280px" src="{{ url_for('static', path='/egg_cracked_tip_s.png') }} ">
-					<img class="egg-result egg-cracked-butt" width="280px" src="{{ url_for('static', path='/egg_cracked_butt_s.png') }} ">
-					<img class="egg-result egg-cracked-both" width="280px" src="{{ url_for('static', path='/egg_cracked_both_s.png') }} ">
+					<img class="egg-result egg-champion" width="280px" src="{{ image_url('/egg_champion_s', 'png') }} ">
+					<img class="egg-result egg-cracked-tip" width="280px" src="{{ image_url('/egg_cracked_tip_s', 'png') }} ">
+					<img class="egg-result egg-cracked-butt" width="280px" src="{{ image_url('/egg_cracked_butt_s', 'png') }} ">
+					<img class="egg-result egg-cracked-both" width="280px" src="{{ image_url('/egg_cracked_both_s', 'png') }} ">
 				</div>
 			</div>
 			<div class="horizontal-buttons">
