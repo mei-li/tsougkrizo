@@ -63,10 +63,12 @@ body {
     width: 100%;
 	position: absolute;
 	text-align: center;
+	z-index: -9999;
+
 }
 
 #tsougkrisma-logo {
-	max-width:150vh;
+	max-width:100vh;
 	
 }
 
