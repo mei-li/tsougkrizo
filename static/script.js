@@ -45,7 +45,12 @@ showResultPage
 */
 
 // Initialization of JS objects
+try {
 Sentry.init({ dsn: 'https://195894b38c894c25ba5c4111599fb9d7@o378832.ingest.sentry.io/5202856' });
+}
+catch (ReferenceError){ // in case sth blocks sentry ignore the error
+
+}
 
 
 var buttonreset = document.getElementById("button-reset");
