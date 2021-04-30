@@ -269,7 +269,7 @@ body {
 }*/
 
 
-div#lang-switch>a:-webkit-any-link {
+.lang-switch  {
     color: white;
     font-weight: 900;
     text-decoration: none;
