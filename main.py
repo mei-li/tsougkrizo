@@ -30,7 +30,7 @@ templates = Jinja2Templates(directory="templates")
 
 
 def get_translations():
-    locales = ['en', 'el', 'sr']
+    locales = ['en', 'el', 'sr', 'ro']
     translations = {}
 
     for locale in locales:
@@ -54,6 +54,7 @@ class Locale(str, Enum):
     greek = "el"
     english = "en"
     serbian = "sr"
+    rumanian = "ro"
     default = "en"
 
 
